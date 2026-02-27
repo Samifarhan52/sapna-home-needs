@@ -6,124 +6,241 @@
     <title>Admin Pro | Sapna Home Needs</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-slate-50 font-sans h-screen overflow-hidden text-slate-800">
 
     <div id="admin-dashboard" class="flex h-full">
         <aside class="w-64 bg-slate-900 text-white flex flex-col shadow-xl z-20">
             <div class="p-6 border-b border-slate-800 flex items-center gap-3">
-                <i class="fa-solid fa-leaf text-teal-400 text-2xl"></i>
-                <h2 class="text-xl font-bold">Admin Pro</h2>
+                <i class="fa-solid fa-leaf text-teal-400 text-2xl"></i><h2 class="text-xl font-bold">Admin Pro</h2>
             </div>
             <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-                <button onclick="switchTab('view-orders', this, 'Orders Management')" class="nav-btn w-full flex items-center py-3 px-4 rounded-xl bg-teal-600 text-white transition-all"><i class="fa-solid fa-cart-shopping w-6"></i> Orders</button>
+                <button onclick="switchTab('view-dashboard', this, 'Overview')" class="nav-btn w-full flex items-center py-3 px-4 rounded-xl bg-teal-600 text-white transition-all"><i class="fa-solid fa-chart-line w-6"></i> Overview</button>
+                <button onclick="switchTab('view-orders', this, 'Orders Management')" class="nav-btn w-full flex items-center py-3 px-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-cart-shopping w-6"></i> Orders</button>
                 <button onclick="switchTab('view-inventory', this, 'Inventory Management')" class="nav-btn w-full flex items-center py-3 px-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-boxes-stacked w-6"></i> Inventory</button>
+                <button onclick="switchTab('view-updates', this, 'Daily Updates')" class="nav-btn w-full flex items-center py-3 px-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-bullhorn w-6"></i> Daily Updates</button>
+                <button onclick="switchTab('view-customers', this, 'Customer Directory')" class="nav-btn w-full flex items-center py-3 px-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-users w-6"></i> Customers</button>
                 <button onclick="switchTab('view-settings', this, 'System Settings')" class="nav-btn w-full flex items-center py-3 px-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-sliders w-6"></i> Settings</button>
             </nav>
             <div class="p-4 border-t border-slate-800">
-                <a href="index.html" class="block text-center w-full py-2 px-4 rounded-xl text-slate-400 hover:bg-slate-800 transition"><i class="fa-solid fa-arrow-left"></i> Back to Site</a>
+                <a href="index.html" onclick="localStorage.removeItem('sapna_client_user');" class="block text-center w-full py-2 px-4 rounded-xl text-red-400 hover:bg-red-400/10 transition"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout to Site</a>
             </div>
         </aside>
 
         <main class="flex-1 overflow-y-auto bg-slate-50 p-8 relative">
-            <header class="mb-8 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
-                <h1 id="page-title" class="text-2xl font-extrabold text-slate-800 ml-2">Orders Management</h1>
+            <header class="flex justify-between items-center mb-8 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+                <h1 id="page-title" class="text-2xl font-extrabold text-slate-800 ml-2">Overview</h1>
             </header>
 
-            <div id="view-orders" class="admin-tab block bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div id="view-dashboard" class="admin-tab block">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100"><p class="text-slate-500 font-semibold">Total Revenue</p><h3 class="text-3xl font-bold text-slate-800 mt-1" id="stat-revenue">₹0</h3></div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100"><p class="text-slate-500 font-semibold">Total Orders</p><h3 class="text-3xl font-bold text-slate-800 mt-1" id="stat-orders">0</h3></div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100"><p class="text-slate-500 font-semibold">Registered Users</p><h3 class="text-3xl font-bold text-slate-800 mt-1" id="stat-customers">0</h3></div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-slate-800 mb-6">Traffic & Revenue</h3>
+                    <canvas id="trafficChart" height="80"></canvas>
+                </div>
+            </div>
+
+            <div id="view-orders" class="admin-tab hidden bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-slate-50 text-slate-500 text-sm uppercase"><tr><th class="p-4">Order ID</th><th class="p-4">Customer</th><th class="p-4">Items</th><th class="p-4">Total</th><th class="p-4">Status</th></tr></thead>
+                    <thead class="bg-slate-50 text-slate-500 text-sm uppercase"><tr><th class="p-4">Order ID</th><th class="p-4">Customer</th><th class="p-4">Items</th><th class="p-4">Total</th><th class="p-4">Status</th><th class="p-4 text-right">Action</th></tr></thead>
                     <tbody id="orders-tbody" class="text-sm divide-y divide-slate-100"></tbody>
                 </table>
             </div>
 
-            <div id="view-inventory" class="admin-tab hidden bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-                <h3 class="font-bold text-slate-500">Inventory Module Active</h3>
+            <div id="view-inventory" class="admin-tab hidden bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                    <h3 class="font-bold">Product Stock Management</h3>
+                    <button onclick="document.getElementById('add-product-modal').classList.remove('hidden')" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm transition">+ Add Product</button>
+                </div>
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-50 text-slate-500 text-sm uppercase"><tr><th class="p-4">Product</th><th class="p-4">Category</th><th class="p-4">Price</th><th class="p-4">Stock Level</th><th class="p-4 text-right">Actions</th></tr></thead>
+                    <tbody id="inventory-tbody" class="text-sm divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+
+            <div id="view-updates" class="admin-tab hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold mb-4">Post New Offer</h3>
+                    <form id="add-update-form" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="up-title" class="border p-3 rounded-xl outline-none focus:border-teal-500" placeholder="Offer Title (e.g. Mega Sale)" required>
+                            <input type="text" id="up-badge" class="border p-3 rounded-xl outline-none focus:border-teal-500" placeholder="Badge (e.g. 20% OFF)" required>
+                        </div>
+                        <textarea id="up-desc" class="w-full border p-3 rounded-xl outline-none focus:border-teal-500" rows="2" placeholder="Description..." required></textarea>
+                        <button type="submit" class="bg-slate-900 text-white px-6 py-2 rounded-xl">Publish Offer</button>
+                    </form>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border p-6"><h3 class="font-bold mb-4">Live Offers</h3><div id="updates-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div></div>
+            </div>
+
+            <div id="view-customers" class="admin-tab hidden bg-white rounded-2xl shadow-sm border overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-50 text-slate-500 text-sm uppercase"><tr><th class="p-4">Customer Info</th><th class="p-4">Phone</th><th class="p-4">Saved Address</th></tr></thead>
+                    <tbody id="customers-tbody" class="text-sm divide-y divide-slate-100"></tbody>
+                </table>
             </div>
 
             <div id="view-settings" class="admin-tab hidden space-y-6">
-                
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                    <div class="p-6 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
-                        <i class="fa-solid fa-mobile-screen-button text-teal-600 text-xl"></i>
-                        <h3 class="font-bold text-slate-800 text-lg">Dynamic Features & Config</h3>
-                    </div>
-                    
+                    <div class="p-6 border-b border-slate-100 bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-sliders text-teal-600 text-xl"></i><h3 class="font-bold text-slate-800 text-lg">Dynamic Config</h3></div>
                     <div class="p-6 space-y-6">
                         <div class="flex items-center justify-between border-b pb-4">
-                            <div>
-                                <h4 class="font-bold text-slate-800 text-lg">Require OTP on Login/Signup</h4>
-                                <p class="text-sm text-slate-500">Enable an extra layer of security for customers.</p>
-                            </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="toggle-otp" class="sr-only peer" onchange="updateConfig('requireOTP', this.checked)">
-                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
-                            </label>
+                            <div><h4 class="font-bold text-lg">Require OTP on Login/Signup</h4><p class="text-sm text-slate-500">Enable an extra layer of security.</p></div>
+                            <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="toggle-otp" class="sr-only peer" onchange="updateConfig('requireOTP', this.checked)"><div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div></label>
                         </div>
-
                         <div class="flex items-center justify-between border-b pb-4">
-                            <div>
-                                <h4 class="font-bold text-slate-800 text-lg">Store is Open for Orders</h4>
-                                <p class="text-sm text-slate-500">Turn this off to prevent checkout on the website.</p>
-                            </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="toggle-store" class="sr-only peer" onchange="updateConfig('storeOpen', this.checked)">
-                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
-                            </label>
+                            <div><h4 class="font-bold text-lg">Store is Open</h4><p class="text-sm text-slate-500">Turn this off to prevent website checkouts.</p></div>
+                            <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="toggle-store" class="sr-only peer" onchange="updateConfig('storeOpen', this.checked)"><div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div></label>
                         </div>
-
                         <div class="flex items-center justify-between">
-                            <div>
-                                <h4 class="font-bold text-slate-800 text-lg">Delivery Fee (₹)</h4>
-                                <p class="text-sm text-slate-500">Adjust the flat delivery fee added at checkout.</p>
-                            </div>
-                            <input type="number" id="config-delivery" onchange="updateConfig('deliveryFee', this.value)" class="w-24 border border-slate-300 rounded-lg p-2 text-center focus:border-teal-500 outline-none">
+                            <div><h4 class="font-bold text-lg">Delivery Fee (₹)</h4><p class="text-sm text-slate-500">Flat fee added at checkout.</p></div>
+                            <input type="number" id="config-delivery" onchange="updateConfig('deliveryFee', this.value)" class="w-24 border border-slate-300 rounded-lg p-2 text-center outline-none">
                         </div>
                     </div>
                 </div>
-
             </div>
+
         </main>
     </div>
 
+    <div id="add-product-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
+        <div class="bg-white p-6 rounded-3xl w-full max-w-md shadow-2xl">
+            <h2 class="text-xl font-bold mb-4">Add New Product</h2>
+            <form id="add-product-form" class="space-y-4">
+                <input type="text" id="prod-name" class="w-full border p-3 rounded-xl outline-none" placeholder="Product Name" required>
+                <select id="prod-cat" class="w-full border p-3 rounded-xl outline-none">
+                    <option>Fresh Veggies</option><option>Fruits</option><option>Staples</option><option>Dairy & Oil</option><option>Household</option>
+                </select>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="number" id="prod-price" class="w-full border p-3 rounded-xl outline-none" placeholder="Price (₹)" required>
+                    <input type="number" id="prod-stock" class="w-full border p-3 rounded-xl outline-none" placeholder="Stock Qty" required>
+                </div>
+                <input type="url" id="prod-img" class="w-full border p-3 rounded-xl outline-none" placeholder="Image Link (https://...)">
+                <p class="text-xs text-slate-400 -mt-2">Paste a link to an image from Google.</p>
+                <div class="flex gap-2 justify-end mt-4">
+                    <button type="button" onclick="document.getElementById('add-product-modal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 rounded-xl">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded-xl">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        function switchTab(tabId, clickedButton, title) {
+        const getData = (key) => JSON.parse(localStorage.getItem(key)) || [];
+        const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data));
+
+        function switchTab(tabId, btn, title) {
             document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.className = "nav-btn w-full flex items-center py-3 px-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all";
-            });
-            clickedButton.className = "nav-btn w-full flex items-center py-3 px-4 rounded-xl bg-teal-600 text-white transition-all";
+            document.querySelectorAll('.nav-btn').forEach(b => b.className = "nav-btn w-full flex items-center py-3 px-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all");
+            btn.className = "nav-btn w-full flex items-center py-3 px-4 rounded-xl bg-teal-600 text-white transition-all";
             document.getElementById('page-title').innerText = title;
         }
 
-        // --- Extensible Settings Logic ---
+        function renderAll() {
+            renderDashboard(); renderOrders(); renderInventory(); renderUpdates(); renderCustomers(); loadAdminSettings();
+        }
+
+        // 1. Dashboard
+        function renderDashboard() {
+            const orders = getData('sapna_orders');
+            const users = getData('sapna_users');
+            document.getElementById('stat-revenue').innerText = "₹" + orders.reduce((sum, ord) => sum + ord.total, 0).toLocaleString();
+            document.getElementById('stat-orders').innerText = orders.length;
+            document.getElementById('stat-customers').innerText = users.length;
+        }
+
+        // 2. Orders
+        function renderOrders() {
+            const tbody = document.getElementById('orders-tbody'); tbody.innerHTML = '';
+            getData('sapna_orders').forEach((o, i) => {
+                let badge = o.status === 'Pending' ? 'bg-amber-100 text-amber-700' : (o.status === 'Ready' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700');
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition border-b">
+                        <td class="p-4 font-bold">${o.id}</td><td class="p-4">${o.name}</td><td class="p-4 text-slate-500">${o.items}</td><td class="p-4 font-bold">₹${o.total}</td>
+                        <td class="p-4"><span class="${badge} px-3 py-1 rounded-full text-xs font-bold cursor-pointer hover:opacity-80" onclick="toggleOrderStatus(${i})">${o.status}</span></td>
+                        <td class="p-4 text-right"><button onclick="deleteData('sapna_orders', ${i})" class="text-red-500"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>`;
+            });
+        }
+        window.toggleOrderStatus = function(i) {
+            let orders = getData('sapna_orders');
+            orders[i].status = orders[i].status === 'Pending' ? 'Ready' : (orders[i].status === 'Ready' ? 'Delivered' : 'Pending');
+            setData('sapna_orders', orders); renderOrders();
+        }
+
+        // 3. Inventory
+        function renderInventory() {
+            const tbody = document.getElementById('inventory-tbody'); tbody.innerHTML = '';
+            getData('sapna_inventory').forEach((p, i) => {
+                let imageSrc = p.imgUrl ? p.imgUrl : `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&background=0D8ABC&color=fff`;
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition border-b">
+                        <td class="p-4 font-bold flex items-center gap-3"><img src="${imageSrc}" class="w-10 h-10 rounded-lg object-cover border"> ${p.name}</td>
+                        <td class="p-4 text-slate-500">${p.cat}</td><td class="p-4">₹${p.price}</td>
+                        <td class="p-4"><span class="${p.stock < 10 ? 'text-red-600' : 'text-green-600'} font-bold">${p.stock}</span></td>
+                        <td class="p-4 text-right">
+                            <button onclick="updateStock(${i})" class="text-teal-600 mr-3 text-xs bg-teal-50 px-2 py-1 rounded">Update Stock</button>
+                            <button onclick="deleteData('sapna_inventory', ${i})" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+            });
+        }
+        document.getElementById('add-product-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let inv = getData('sapna_inventory');
+            inv.push({ id: Date.now(), name: document.getElementById('prod-name').value, cat: document.getElementById('prod-cat').value, price: parseInt(document.getElementById('prod-price').value), stock: parseInt(document.getElementById('prod-stock').value), imgUrl: document.getElementById('prod-img').value });
+            setData('sapna_inventory', inv); document.getElementById('add-product-modal').classList.add('hidden'); this.reset(); renderInventory();
+        });
+        window.updateStock = function(i) {
+            let s = prompt("New stock qty:");
+            if(s !== null && !isNaN(s)) { let inv = getData('sapna_inventory'); inv[i].stock = parseInt(s); setData('sapna_inventory', inv); renderInventory(); }
+        }
+
+        // 4. Updates
+        function renderUpdates() {
+            const list = document.getElementById('updates-list'); list.innerHTML = '';
+            getData('sapna_updates').forEach((u, i) => {
+                list.innerHTML += `<div class="border rounded-xl p-4 flex justify-between"><div class="pr-4"><span class="bg-amber-100 text-amber-600 text-xs font-bold px-2 py-1 rounded">${u.badge}</span><h4 class="font-bold mt-2">${u.title}</h4><p class="text-xs text-slate-500">${u.desc}</p></div><button onclick="deleteData('sapna_updates', ${i})" class="text-red-500 self-center"><i class="fa-solid fa-trash"></i></button></div>`;
+            });
+        }
+        document.getElementById('add-update-form').addEventListener('submit', function(e) {
+            e.preventDefault(); let ups = getData('sapna_updates'); ups.push({ id: Date.now(), title: document.getElementById('up-title').value, badge: document.getElementById('up-badge').value, desc: document.getElementById('up-desc').value });
+            setData('sapna_updates', ups); this.reset(); renderUpdates();
+        });
+
+        // 5. Customers
+        function renderCustomers() {
+            const tbody = document.getElementById('customers-tbody'); tbody.innerHTML = '';
+            getData('sapna_users').forEach(u => {
+                tbody.innerHTML += `<tr class="hover:bg-slate-50 transition border-b"><td class="p-4 font-bold flex gap-3 items-center"><div class="w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold">${u.name.charAt(0)}</div>${u.name}</td><td class="p-4 text-slate-600">${u.phone}</td><td class="p-4 text-slate-500 text-sm">${u.address || 'Not Provided'}</td></tr>`;
+            });
+        }
+
+        // 6. Settings
         function loadAdminSettings() {
-            const config = JSON.parse(localStorage.getItem('sapna_config'));
-            if(config) {
-                document.getElementById('toggle-otp').checked = config.requireOTP;
-                document.getElementById('toggle-store').checked = config.storeOpen;
-                document.getElementById('config-delivery').value = config.deliveryFee;
-            }
+            const config = JSON.parse(localStorage.getItem('sapna_config')) || { requireOTP: true, storeOpen: true, deliveryFee: 20 };
+            document.getElementById('toggle-otp').checked = config.requireOTP;
+            document.getElementById('toggle-store').checked = config.storeOpen;
+            document.getElementById('config-delivery').value = config.deliveryFee;
+        }
+        window.updateConfig = function(key, value) {
+            let config = JSON.parse(localStorage.getItem('sapna_config')); config[key] = value; setData('sapna_config', config);
         }
 
-        function updateConfig(key, value) {
-            let config = JSON.parse(localStorage.getItem('sapna_config'));
-            config[key] = value;
-            localStorage.setItem('sapna_config', JSON.stringify(config));
-            
-            // Show a tiny success toast
-            const btn = document.getElementById('page-title');
-            const originalText = btn.innerText;
-            btn.innerHTML = `<span class="text-green-500"><i class="fa-solid fa-check"></i> Saved successfully</span>`;
-            setTimeout(() => btn.innerText = originalText, 1500);
-        }
+        // General Delete
+        window.deleteData = function(key, index) { let data = getData(key); data.splice(index, 1); setData(key, data); renderAll(); }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeData();
-            loadAdminSettings();
+        document.addEventListener('DOMContentLoaded', () => { 
+            renderAll(); 
+            // Chart init
+            const ctx = document.getElementById('trafficChart');
+            if(ctx) new Chart(ctx, { type: 'line', data: { labels: ['M','T','W','T','F','S','S'], datasets: [{ label: 'Revenue (₹)', data: [12000, 19000, 15000, 22000, 18000, 28000, 25000], borderColor: '#0d9488', backgroundColor: 'rgba(13, 148, 136, 0.1)', fill: true, tension: 0.4 }] }});
         });
     </script>
 </body>
