@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | Sapna Home Needs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-sans min-h-screen">
+
+    <nav class="bg-white shadow-sm border-b border-slate-100 p-4 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="shop.html?category=All" class="text-slate-500 hover:text-teal-600 font-bold transition flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Back to Shop
+            </a>
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-leaf text-teal-500 text-xl"></i>
+                <h1 class="text-xl font-extrabold text-slate-800">Checkout</h1>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-12 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="lg:col-span-2 space-y-6">
+            <form id="checkout-form" class="space-y-6">
+                
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                    <h2 class="text-xl font-bold text-slate-800 mb-4"><i class="fa-solid fa-address-card text-teal-500 mr-2"></i> Contact Details</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Full Name</label>
+                            <input type="text" id="chk-name" class="w-full border p-3 rounded-xl outline-none focus:border-teal-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Primary Phone</label>
+                            <input type="tel" id="chk-phone" class="w-full border p-3 rounded-xl outline-none focus:border-teal-500" required>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Alternative Phone (Optional)</label>
+                            <input type="tel" id="chk-alt-phone" class="w-full border p-3 rounded-xl outline-none focus:border-teal-500" placeholder="In case primary number is unreachable">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                    <h2 class="text-xl font-bold text-slate-800 mb-4"><i class="fa-solid fa-truck-fast text-teal-500 mr-2"></i> Delivery Method</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <label class="border-2 border-slate-200 rounded-xl p-4 cursor-pointer hover:border-teal-500 transition relative">
+                            <input type="radio" name="delivery_mode" value="Home Delivery" class="absolute top-4 right-4 accent-teal-600 w-5 h-5" onchange="toggleDeliveryMode()" checked>
+                            <i class="fa-solid fa-house text-2xl text-slate-400 mb-2 block"></i>
+                            <span class="font-bold block text-slate-800">Home Delivery</span>
+                            <span class="text-xs text-slate-500">Delivered to your address</span>
+                        </label>
+                        <label class="border-2 border-slate-200 rounded-xl p-4 cursor-pointer hover:border-teal-500 transition relative">
+                            <input type="radio" name="delivery_mode" value="Self Pickup" class="absolute top-4 right-4 accent-teal-600 w-5 h-5" onchange="toggleDeliveryMode()">
+                            <i class="fa-solid fa-store text-2xl text-slate-400 mb-2 block"></i>
+                            <span class="font-bold block text-slate-800">Self Pickup</span>
+                            <span class="text-xs text-slate-500">Pick up from store</span>
+                        </label>
+                    </div>
+
+                    <div id="home-delivery-slots" class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <h3 class="font-bold text-sm text-slate-700">Select Date & Time</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="date" id="chk-date" class="w-full border p-3 rounded-xl outline-none focus:border-teal-500">
+                            <select id="chk-time" class="w-full border p-3 rounded-xl outline-none focus:border-teal-500">
+                                <option value="">Select a time slot...</option>
+                                <option value="08:00 AM - 10:00 AM">08:00 AM - 10:00 AM</option>
+                                <option value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</option>
+                                <option value="12:00 PM - 02:00 PM">12:00 PM - 02:00 PM</option>
+                                <option value="02:00 PM - 05:00 PM">02:00 PM - 05:00 PM</option>
+                                <option value="05:00 PM - 08:00 PM">05:00 PM - 08:00 PM</option>
+                            </select>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Full Delivery Address</label>
+                            <textarea id="chk-address" rows="3" class="w-full border p-3 rounded-xl outline-none focus:border-teal-500" placeholder="House/Flat No., Street, Landmark"></textarea>
+                        </div>
+                    </div>
+
+                    <div id="self-pickup-notice" class="hidden bg-blue-50 text-blue-700 p-4 rounded-xl border border-blue-100 flex items-center gap-3">
+                        <i class="fa-solid fa-circle-info text-2xl"></i>
+                        <div>
+                            <p class="font-bold text-sm">Self Pickup Selected</p>
+                            <p class="text-xs">Your order will be packed and ready within <strong>3 hours</strong> of booking confirmation.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+
+        <div class="bg-slate-900 text-white p-6 rounded-3xl shadow-xl h-fit sticky top-24">
+            <h2 class="text-xl font-bold mb-6 border-b border-slate-700 pb-4">Order Summary</h2>
+            <div id="chk-items-list" class="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2">
+                </div>
+            
+            <div class="border-t border-slate-700 pt-4 space-y-2 text-sm text-slate-300">
+                <div class="flex justify-between"><span>Subtotal</span> <span id="chk-subtotal">₹0</span></div>
+                <div class="flex justify-between"><span>Delivery Fee</span> <span id="chk-fee">₹0</span></div>
+            </div>
+            
+            <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-700">
+                <span class="font-bold text-lg">Total</span>
+                <span id="chk-total" class="text-3xl font-extrabold text-teal-400">₹0</span>
+            </div>
+
+            <button onclick="submitOrder(event)" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl mt-8 shadow-[0_0_20px_rgba(34,197,94,0.3)] transition text-lg">
+                Confirm Order <i class="fa-solid fa-check ml-2"></i>
+            </button>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
