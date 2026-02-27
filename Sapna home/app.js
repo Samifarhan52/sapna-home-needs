@@ -100,10 +100,25 @@ function loadShopProducts() {
     });
 }
 
-// 4. Cart Logic
+// 4. Cart Logic (WITH AUTO-FILL ADDRESS)
 window.toggleCart = function() {
     const modal = document.getElementById('cart-modal');
     const panel = document.getElementById('cart-panel');
+    
+    // Auto-fill Name and Address from User Settings
+    const activeUser = JSON.parse(localStorage.getItem('sapna_client_user'));
+    if (activeUser) {
+        const nameInput = document.getElementById('cust-name');
+        const addressInput = document.getElementById('cust-address');
+        
+        if (nameInput && !nameInput.value) {
+            nameInput.value = activeUser.name || '';
+        }
+        if (addressInput && !addressInput.value) {
+            addressInput.value = activeUser.address || '';
+        }
+    }
+
     if (modal.classList.contains('opacity-0')) {
         modal.classList.remove('opacity-0', 'pointer-events-none');
         panel.classList.remove('translate-x-full');
