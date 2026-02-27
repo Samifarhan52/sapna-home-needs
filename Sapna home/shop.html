@@ -57,16 +57,13 @@
             
             <div class="p-6 border-t border-slate-200 bg-white shadow-[0_-10px_20px_rgba(0,0,0,0.03)]">
                 <div class="flex justify-between items-center mb-6">
-                    <span class="text-slate-500 font-bold uppercase tracking-wider text-sm">Total Amount</span>
+                    <span class="text-slate-500 font-bold uppercase tracking-wider text-sm">Subtotal</span>
                     <span id="cart-total" class="text-3xl font-extrabold text-teal-600">₹0</span>
                 </div>
                 
-                <input type="text" id="cust-name" placeholder="Your Full Name" class="w-full mb-3 p-3 rounded-xl border border-slate-200 focus:border-teal-500 outline-none bg-slate-50" required>
-                <textarea id="cust-address" placeholder="Delivery Address / Pickup Note" class="w-full mb-4 p-3 rounded-xl border border-slate-200 focus:border-teal-500 outline-none bg-slate-50" rows="2" required></textarea>
-                
-                <button onclick="processCheckout()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(34,197,94,0.3)] transition flex items-center justify-center gap-2 text-lg hover:-translate-y-1">
-                    <i class="fa-brands fa-whatsapp text-2xl"></i> Send Order securely
-                </button>
+                <a href="checkout.html" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(34,197,94,0.3)] transition flex items-center justify-center gap-2 text-lg hover:-translate-y-1 text-center block">
+                    Proceed to Checkout <i class="fa-solid fa-arrow-right"></i>
+                </a>
             </div>
         </div>
     </div>
