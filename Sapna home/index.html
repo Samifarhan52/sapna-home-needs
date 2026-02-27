@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Custom animated background blob for the futuristic feel */
         .bg-blob {
             position: absolute;
             filter: blur(80px);
@@ -26,7 +25,7 @@
     <div class="bg-blob bg-teal-300 w-96 h-96 rounded-full top-0 left-[-10%]"></div>
     <div class="bg-blob bg-emerald-200 w-96 h-96 rounded-full top-40 right-[-10%]"></div>
 
-    <nav class="fixed w-[95%] max-w-7xl mx-auto top-4 z-50 left-0 right-0 bg-white/70 backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 transition-all duration-300">
+    <nav class="fixed w-[95%] max-w-7xl mx-auto top-4 z-40 left-0 right-0 bg-white/80 backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 transition-all duration-300">
         <div class="px-6 lg:px-8 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-2 group cursor-pointer">
@@ -35,16 +34,64 @@
                     </div>
                     <span class="font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-teal-700 to-emerald-600">Sapna Needs</span>
                 </div>
-                <div class="hidden md:flex space-x-8 items-center font-medium text-slate-600">
+                
+                <div class="hidden md:flex space-x-8 items-center font-medium text-slate-600" id="desktop-menu">
                     <a href="shop.html?category=All" class="hover:text-teal-600 transition-colors">All Products</a>
                     <a href="#offers" class="hover:text-teal-600 transition-colors">Offers</a>
                     <a href="#services" class="hover:text-teal-600 transition-colors">Services</a>
-                    <a href="#location" class="hover:text-teal-600 transition-colors">Location</a>
-                    <a href="admin.html" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl shadow-lg hover:shadow-slate-500/30 hover:-translate-y-0.5 transition-all duration-300 text-sm">Admin Pro</a>
+                    <div id="desktop-auth-container">
+                        <button onclick="toggleAuthModal()" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl shadow-lg hover:shadow-slate-500/30 hover:-translate-y-0.5 transition-all duration-300 text-sm">Login / Sign Up</button>
+                    </div>
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-teal-600 focus:outline-none transition">
+                        <i id="mobile-icon" class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pt-4 border-t border-slate-200/50 flex flex-col space-y-4 font-medium text-slate-600 pb-2">
+                <a href="shop.html?category=All" class="hover:text-teal-600 transition-colors px-2">All Products</a>
+                <a href="#offers" onclick="toggleMobileMenu()" class="hover:text-teal-600 transition-colors px-2">Offers</a>
+                <a href="#services" onclick="toggleMobileMenu()" class="hover:text-teal-600 transition-colors px-2">Services</a>
+                <div id="mobile-auth-container" class="mt-2">
+                    <button onclick="toggleAuthModal()" class="w-full bg-slate-900 text-white px-5 py-3 rounded-xl shadow-lg text-center font-bold">Login / Sign Up</button>
                 </div>
             </div>
         </div>
     </nav>
+
+    <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border border-slate-200 transform scale-95 transition-transform duration-300" id="auth-panel">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-extrabold text-slate-900">Welcome Back</h2>
+                <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            
+            <form id="auth-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Username / Email</label>
+                    <input type="text" id="auth-user" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 outline-none" placeholder="Enter username" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Password</label>
+                    <input type="password" id="auth-pass" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 outline-none" placeholder="Enter password" required>
+                </div>
+                <div class="flex justify-between items-center text-sm mt-2">
+                    <label class="flex items-center gap-2 text-slate-500 cursor-pointer"><input type="checkbox" class="accent-teal-500"> Remember me</label>
+                    <a href="#" class="text-teal-600 hover:underline">Forgot Password?</a>
+                </div>
+                
+                <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-teal-500/30 mt-4">
+                    Sign In <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+                <div class="text-center mt-4">
+                    <p class="text-sm text-slate-500">Don't have an account? <a href="#" class="text-teal-600 font-bold hover:underline">Sign Up</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <header class="pt-40 pb-20 lg:pt-48 lg:pb-32 relative">
         <div class="max-w-7xl mx-auto px-4 text-center">
@@ -256,7 +303,7 @@
                 <p class="text-slate-400 mb-4 ml-6">Shanti Nagar, Bengaluru 560027</p>
                 <p class="text-teal-400 font-medium mb-2"><i class="fa-regular fa-clock mr-2"></i> Open Today • Closes 12 AM</p>
                 <p class="text-slate-400"><i class="fa-solid fa-phone text-teal-500 mr-2"></i> 088845 90962</p>
-                <a href ="https://maps.app.goo.gl/Hk4Be8N4uqh8gNJx6"><i class="fa-solid fa-location-dot text-teal-500 mr-2"> Directions</i></a>
+                <a href ="https://maps.app.goo.gl/Hk4Be8N4uqh8gNJx6" class="text-teal-500 hover:text-teal-400 mt-2 inline-block"><i class="fa-solid fa-map-location-dot mr-2"></i> Get Directions</a>
             </div>
 
             <div>
@@ -274,7 +321,7 @@
             </div>
         </div>
         <div class="max-w-7xl mx-auto px-4 border-t border-slate-800/50 pt-8 flex flex-col md:flex-row justify-between items-center text-slate-500 text-sm">
-            <p>&copy; 2026 Sapna Home Needs. All rights reserved.</p>
+            <p>© 2026 Sapna Home Needs. All rights reserved.</p>
             <div class="flex gap-4 mt-4 md:mt-0 text-xl">
                 <i class="fa-brands fa-google-pay hover:text-white transition-colors cursor-pointer"></i>
                 <i class="fa-brands fa-cc-visa hover:text-white transition-colors cursor-pointer"></i>
@@ -286,7 +333,97 @@
     <script src="app.js"></script>
 
     <script>
+        // 1. Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-icon');
+            
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            } else {
+                menu.classList.add('hidden');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        // 2. Auth Modal Toggle
+        function toggleAuthModal() {
+            const modal = document.getElementById('auth-modal');
+            const panel = document.getElementById('auth-panel');
+            
+            if (modal.classList.contains('opacity-0')) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                panel.classList.remove('scale-95');
+                // Close mobile menu if open
+                document.getElementById('mobile-menu').classList.add('hidden');
+                document.getElementById('mobile-icon').classList.replace('fa-xmark', 'fa-bars');
+            } else {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                panel.classList.add('scale-95');
+            }
+        }
+
+        // 3. Login Logic (Routing based on User Role)
+        document.getElementById('auth-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = document.getElementById('auth-user').value.trim();
+            const pass = document.getElementById('auth-pass').value;
+
+            // Admin Logic
+            if (user.toLowerCase() === 'admin' && pass === 'sapna123') {
+                window.location.href = 'admin.html';
+            } 
+            // Client Logic (Any other username)
+            else {
+                // Save client info to browser storage
+                localStorage.setItem('sapna_client_user', JSON.stringify({ name: user }));
+                toggleAuthModal(); // Close modal
+                checkLoginStatus(); // Update the UI immediately
+            }
+        });
+
+        // 4. Logout Logic
+        function logoutUser() {
+            localStorage.removeItem('sapna_client_user');
+            checkLoginStatus(); // Update UI back to default
+        }
+
+        // 5. Update Navbar based on who is logged in
+        function checkLoginStatus() {
+            const clientData = JSON.parse(localStorage.getItem('sapna_client_user'));
+            const desktopContainer = document.getElementById('desktop-auth-container');
+            const mobileContainer = document.getElementById('mobile-auth-container');
+
+            if (clientData) {
+                // User IS logged in: Show Profile and Logout
+                const loggedInHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2 text-teal-600 font-bold bg-teal-50 px-4 py-2 rounded-xl border border-teal-100">
+                            <i class="fa-solid fa-circle-user text-xl"></i> Hi, ${clientData.name.split(' ')[0]}
+                        </div>
+                        <button onclick="logoutUser()" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                    </div>
+                `;
+                desktopContainer.innerHTML = loggedInHTML;
+                mobileContainer.innerHTML = `
+                    <div class="bg-slate-100 p-4 rounded-xl mb-2 text-center text-teal-700 font-bold">Logged in as ${clientData.name}</div>
+                    <button onclick="logoutUser()" class="w-full bg-red-50 text-red-500 border border-red-200 px-5 py-3 rounded-xl text-center font-bold">Logout</button>
+                `;
+            } else {
+                // User is NOT logged in: Show Login button
+                desktopContainer.innerHTML = `<button onclick="toggleAuthModal()" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl shadow-lg hover:shadow-slate-500/30 transition-all duration-300 text-sm">Login / Sign Up</button>`;
+                mobileContainer.innerHTML = `<button onclick="toggleAuthModal()" class="w-full bg-slate-900 text-white px-5 py-3 rounded-xl shadow-lg text-center font-bold">Login / Sign Up</button>`;
+            }
+        }
+
+        // Run checking functions when page loads
         document.addEventListener('DOMContentLoaded', () => {
+            checkLoginStatus(); // Check if a user is already logged in
+            
+            // Visitor Counter Logic
             const visitorEl = document.getElementById('live-visitors');
             if (visitorEl) {
                 setInterval(() => {
