@@ -1,6 +1,6 @@
 // app.js - Global Engine for Sapna Home Needs
 
-let cart = [];
+let cart = JSON.parse(localStorage.getItem('sapna_cart')) || [];
 let pendingOTP = null;
 let pendingUserData = null;
 let authAction = null; 
@@ -21,42 +21,219 @@ function initializeData() {
             {id: 4, name: "Washing Powder (1kg)", cat: "Household", price: 120, stock: 8, imgUrl: "https://m.media-amazon.com/images/I/61NlPjT0-2L._AC_UF1000,1000_QL80_.jpg"}
         ];
         const initialUpdates = [{id: 1, badge: "Discount", title: "Onion & Potato Combo", desc: "5kg each. Farm fresh. ₹299 instead of ₹350."}];
-        
         localStorage.setItem('sapna_inventory', JSON.stringify(initialInventory));
         localStorage.setItem('sapna_updates', JSON.stringify(initialUpdates));
         localStorage.setItem('sapna_orders', JSON.stringify([]));
     }
 }
 
-// 2. Load Live Offers (For index.html)
-function loadLiveOffers() {
-    const container = document.getElementById('live-offers-container');
-    if (!container) return; 
-    const updates = JSON.parse(localStorage.getItem('sapna_updates')) || [];
-    container.innerHTML = ''; 
-    if (updates.length === 0) {
-        container.innerHTML = `<p class="text-slate-400 text-center w-full col-span-full">No special offers today.</p>`;
+// 2. Cart Logic (Saves to LocalStorage so it survives page changes)
+window.toggleCart = function() {
+    const modal = document.getElementById('cart-modal');
+    const panel = document.getElementById('cart-panel');
+    if (modal.classList.contains('opacity-0')) {
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        panel.classList.remove('translate-x-full');
+    } else {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        panel.classList.add('translate-x-full');
+    }
+}
+
+window.addToCart = function(productId) {
+    const inventory = JSON.parse(localStorage.getItem('sapna_inventory')) || [];
+    const product = inventory.find(p => p.id === productId);
+    if(!product) return;
+    const existingItem = cart.find(item => item.id === productId);
+    if(existingItem) existingItem.qty += 1;
+    else cart.push({...product, qty: 1});
+    
+    localStorage.setItem('sapna_cart', JSON.stringify(cart));
+    updateCartUI();
+    const cartIcon = document.getElementById('cart-btn');
+    if(cartIcon) { cartIcon.classList.add('-translate-y-2'); setTimeout(() => cartIcon.classList.remove('-translate-y-2'), 200); }
+}
+
+window.removeFromCart = function(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    localStorage.setItem('sapna_cart', JSON.stringify(cart));
+    updateCartUI();
+}
+
+function updateCartUI() {
+    const countEl = document.getElementById('cart-count');
+    const itemsEl = document.getElementById('cart-items');
+    const totalEl = document.getElementById('cart-total');
+    if(!countEl || !itemsEl) return;
+
+    countEl.innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+    itemsEl.innerHTML = '';
+    let totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+    if(cart.length === 0) {
+        itemsEl.innerHTML = '<p class="text-slate-400 text-center mt-10">Your cart is empty.</p>';
+        totalEl.innerText = '₹0';
         return;
     }
-    updates.forEach(offer => {
-        let badgeColor = offer.badge.toLowerCase().includes('bogo') ? 'bg-amber-500' : 'bg-teal-500';
-        container.innerHTML += `
-            <div class="group bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 hover:bg-white/10 transition-all duration-500 hover:shadow-[0_0_30px_rgba(20,184,166,0.3)]">
-                <div class="flex justify-between items-start mb-6">
-                    <span class="${badgeColor} text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">${offer.badge}</span>
-                    <div class="p-3 bg-white/10 rounded-2xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-tags text-2xl text-teal-400"></i></div>
+
+    cart.forEach(item => {
+        itemsEl.innerHTML += `
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center">
+                <div>
+                    <h4 class="font-bold text-slate-800 text-sm">${item.name}</h4>
+                    <p class="text-slate-500 text-xs mt-1">₹${item.price} x ${item.qty}</p>
                 </div>
-                <h3 class="text-2xl font-bold mb-2 text-white">${offer.title}</h3>
-                <p class="text-slate-400 text-sm mb-6">${offer.desc}</p>
-                <div class="flex items-center justify-between">
-                    <a href="shop.html?category=All" class="text-teal-400 font-bold hover:text-teal-300 flex items-center gap-2 group-hover:translate-x-2 transition-transform">Shop Offer <i class="fa-solid fa-arrow-right"></i></a>
+                <div class="flex items-center gap-4">
+                    <span class="font-extrabold text-teal-600">₹${item.price * item.qty}</span>
+                    <button onclick="removeFromCart(${item.id})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash text-sm"></i></button>
                 </div>
             </div>
         `;
     });
+    totalEl.innerText = '₹' + totalPrice;
 }
 
-// 3. Load Shop Products (For shop.html)
+// ==========================================
+// NEW: CHECKOUT PAGE LOGIC
+// ==========================================
+
+// Pre-fill Checkout Page Data
+function loadCheckoutPage() {
+    if(!window.location.href.includes('checkout.html')) return;
+    
+    if(cart.length === 0) {
+        alert("Your cart is empty! Redirecting to shop.");
+        window.location.href = 'shop.html';
+        return;
+    }
+
+    // Auto-fill logged-in user details
+    const activeUser = JSON.parse(localStorage.getItem('sapna_client_user'));
+    if (activeUser) {
+        document.getElementById('chk-name').value = activeUser.name || '';
+        document.getElementById('chk-phone').value = activeUser.phone || '';
+        document.getElementById('chk-address').value = activeUser.address || '';
+    }
+
+    // Render Order Summary
+    const config = JSON.parse(localStorage.getItem('sapna_config'));
+    const list = document.getElementById('chk-items-list');
+    let subtotal = 0;
+    
+    cart.forEach(item => {
+        subtotal += (item.price * item.qty);
+        list.innerHTML += `<div class="flex justify-between text-sm"><span>${item.qty}x ${item.name}</span><span>₹${item.price * item.qty}</span></div>`;
+    });
+
+    document.getElementById('chk-subtotal').innerText = '₹' + subtotal;
+    document.getElementById('chk-fee').innerText = '₹' + config.deliveryFee;
+    document.getElementById('chk-total').innerText = '₹' + (subtotal + config.deliveryFee);
+
+    // Set minimum date to today for Home Delivery
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('chk-date').setAttribute('min', today);
+}
+
+// Toggle Home Delivery vs Pickup UI
+window.toggleDeliveryMode = function() {
+    const mode = document.querySelector('input[name="delivery_mode"]:checked').value;
+    const config = JSON.parse(localStorage.getItem('sapna_config'));
+    const totalEl = document.getElementById('chk-total');
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+    if (mode === 'Home Delivery') {
+        document.getElementById('home-delivery-slots').classList.remove('hidden');
+        document.getElementById('self-pickup-notice').classList.add('hidden');
+        document.getElementById('chk-address').setAttribute('required', 'true');
+        document.getElementById('chk-fee').innerText = '₹' + config.deliveryFee;
+        totalEl.innerText = '₹' + (subtotal + config.deliveryFee);
+    } else {
+        document.getElementById('home-delivery-slots').classList.add('hidden');
+        document.getElementById('self-pickup-notice').classList.remove('hidden');
+        document.getElementById('chk-address').removeAttribute('required');
+        document.getElementById('chk-fee').innerText = '₹0 (Free)';
+        totalEl.innerText = '₹' + subtotal; // No delivery fee for pickup
+    }
+}
+
+// Submit the Order
+window.submitOrder = function(e) {
+    e.preventDefault();
+    if(cart.length === 0) return;
+
+    const name = document.getElementById('chk-name').value;
+    const phone = document.getElementById('chk-phone').value;
+    const altPhone = document.getElementById('chk-alt-phone').value;
+    const mode = document.querySelector('input[name="delivery_mode"]:checked').value;
+    const config = JSON.parse(localStorage.getItem('sapna_config'));
+
+    if(!name || !phone) { alert("Name and Primary Phone are required."); return; }
+
+    let deliveryTimeStr = "Within 3 hours of booking";
+    let address = "Store Pickup";
+    let finalFee = 0;
+
+    if (mode === 'Home Delivery') {
+        const date = document.getElementById('chk-date').value;
+        const time = document.getElementById('chk-time').value;
+        address = document.getElementById('chk-address').value;
+        if(!date || !time || !address) { alert("Please select a date, time slot, and enter your address."); return; }
+        deliveryTimeStr = `${date} | ${time}`;
+        finalFee = parseInt(config.deliveryFee);
+    }
+
+    const orderId = 'ORD-' + Math.floor(1000 + Math.random() * 9000);
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const total = subtotal + finalFee;
+    const itemsString = cart.map(item => `${item.qty}x ${item.name}`).join(', ');
+
+    // Generate WhatsApp Link
+    let waMessage = `*Sapna Home Needs - New Order: ${orderId}*%0A%0A`;
+    waMessage += `*Customer:* ${name}%0A*Phone:* ${phone} ${altPhone ? `(Alt: ${altPhone})` : ''}%0A`;
+    waMessage += `*Type:* ${mode}%0A*Slot:* ${deliveryTimeStr}%0A`;
+    if(mode === 'Home Delivery') waMessage += `*Address:* ${address}%0A`;
+    waMessage += `%0A*Items:*%0A`;
+    cart.forEach(item => { waMessage += `- ${item.qty}x ${item.name} (₹${item.price * item.qty})%0A`; });
+    waMessage += `%0A*Total Paid:* ₹${total}%0A%0APlease confirm my order!`;
+
+    const waUrl = `https://wa.me/917676808068?text=${waMessage}`;
+
+    // Save to Admin Orders Database
+    const existingOrders = JSON.parse(localStorage.getItem('sapna_orders')) || [];
+    existingOrders.unshift({ id: orderId, name: name, items: itemsString, total: total, status: "Pending" });
+    localStorage.setItem('sapna_orders', JSON.stringify(existingOrders));
+
+    // Save Receipt Data for receipt.html
+    const receiptData = { orderId, method: mode, time: deliveryTimeStr, total, waUrl };
+    localStorage.setItem('sapna_current_receipt', JSON.stringify(receiptData));
+
+    // Clear Cart & Redirect
+    localStorage.removeItem('sapna_cart');
+    cart = [];
+    window.location.href = 'receipt.html';
+}
+
+// ==========================================
+// NEW: RECEIPT PAGE LOGIC
+// ==========================================
+function loadReceiptPage() {
+    if(!window.location.href.includes('receipt.html')) return;
+    const receipt = JSON.parse(localStorage.getItem('sapna_current_receipt'));
+    if(!receipt) { window.location.href = 'index.html'; return; }
+
+    document.getElementById('rec-id').innerText = receipt.orderId;
+    document.getElementById('rec-method').innerText = receipt.method;
+    document.getElementById('rec-time').innerText = receipt.time;
+    document.getElementById('rec-total').innerText = '₹' + receipt.total;
+    
+    window.sendWhatsAppReceipt = function() {
+        window.open(receipt.waUrl, '_blank');
+    }
+}
+
+// (The rest of your code: loadShopProducts, loadLiveOffers, processAuth, OTP, Client Settings remain identical here. Just append them to the bottom of app.js)
+
+// Load Shop Products (For shop.html)
 function loadShopProducts() {
     const container = document.getElementById('product-grid');
     if (!container) return; 
@@ -100,115 +277,17 @@ function loadShopProducts() {
     });
 }
 
-// 4. Cart Logic (WITH AUTO-FILL ADDRESS)
-window.toggleCart = function() {
-    const modal = document.getElementById('cart-modal');
-    const panel = document.getElementById('cart-panel');
-    
-    // Auto-fill Name and Address from User Settings
-    const activeUser = JSON.parse(localStorage.getItem('sapna_client_user'));
-    if (activeUser) {
-        const nameInput = document.getElementById('cust-name');
-        const addressInput = document.getElementById('cust-address');
-        
-        if (nameInput && !nameInput.value) {
-            nameInput.value = activeUser.name || '';
-        }
-        if (addressInput && !addressInput.value) {
-            addressInput.value = activeUser.address || '';
-        }
-    }
+// Run functions when the page loads
+document.addEventListener('DOMContentLoaded', () => { 
+    initializeData(); 
+    loadLiveOffers(); 
+    loadShopProducts(); 
+    updateCartUI(); 
+    loadCheckoutPage(); 
+    loadReceiptPage(); 
+});
 
-    if (modal.classList.contains('opacity-0')) {
-        modal.classList.remove('opacity-0', 'pointer-events-none');
-        panel.classList.remove('translate-x-full');
-    } else {
-        modal.classList.add('opacity-0', 'pointer-events-none');
-        panel.classList.add('translate-x-full');
-    }
-}
-
-window.addToCart = function(productId) {
-    const inventory = JSON.parse(localStorage.getItem('sapna_inventory')) || [];
-    const product = inventory.find(p => p.id === productId);
-    if(!product) return;
-    const existingItem = cart.find(item => item.id === productId);
-    if(existingItem) existingItem.qty += 1;
-    else cart.push({...product, qty: 1});
-    updateCartUI();
-    const cartIcon = document.getElementById('cart-btn');
-    if(cartIcon) { cartIcon.classList.add('-translate-y-2'); setTimeout(() => cartIcon.classList.remove('-translate-y-2'), 200); }
-}
-
-window.removeFromCart = function(productId) {
-    cart = cart.filter(item => item.id !== productId);
-    updateCartUI();
-}
-
-function updateCartUI() {
-    const countEl = document.getElementById('cart-count');
-    const itemsEl = document.getElementById('cart-items');
-    const totalEl = document.getElementById('cart-total');
-    if(!countEl || !itemsEl) return;
-
-    countEl.innerText = cart.reduce((sum, item) => sum + item.qty, 0);
-    itemsEl.innerHTML = '';
-    let totalPrice = 0;
-
-    if(cart.length === 0) {
-        itemsEl.innerHTML = '<p class="text-slate-400 text-center mt-10">Your cart is empty.</p>';
-        totalEl.innerText = '₹0';
-        return;
-    }
-
-    cart.forEach(item => {
-        let itemTotal = item.price * item.qty;
-        totalPrice += itemTotal;
-        itemsEl.innerHTML += `
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center">
-                <div>
-                    <h4 class="font-bold text-slate-800 text-sm">${item.name}</h4>
-                    <p class="text-slate-500 text-xs mt-1">₹${item.price} x ${item.qty}</p>
-                </div>
-                <div class="flex items-center gap-4">
-                    <span class="font-extrabold text-teal-600">₹${itemTotal}</span>
-                    <button onclick="removeFromCart(${item.id})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash text-sm"></i></button>
-                </div>
-            </div>
-        `;
-    });
-    totalEl.innerText = '₹' + totalPrice;
-}
-
-window.processCheckout = function() {
-    if(cart.length === 0) { alert("Cart is empty!"); return; }
-    const config = JSON.parse(localStorage.getItem('sapna_config'));
-    if(!config.storeOpen) { alert("Sorry, the store is currently closed to new orders."); return; }
-
-    const name = document.getElementById('cust-name').value;
-    const address = document.getElementById('cust-address').value;
-    if(!name || !address) { alert("Enter Name and Address."); return; }
-
-    const orderId = 'ORD-' + Math.floor(1000 + Math.random() * 9000);
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    const total = subtotal + parseInt(config.deliveryFee);
-    const itemsString = cart.map(item => `${item.qty}x ${item.name}`).join(', ');
-
-    const existingOrders = JSON.parse(localStorage.getItem('sapna_orders')) || [];
-    existingOrders.unshift({ id: orderId, name: name, items: itemsString, total: total, status: "Pending" });
-    localStorage.setItem('sapna_orders', JSON.stringify(existingOrders));
-
-    let waMessage = `*New Order: ${orderId}*%0A%0A*Customer:* ${name}%0A*Address:* ${address}%0A%0A*Items:*%0A`;
-    cart.forEach(item => { waMessage += `- ${item.qty}x ${item.name} (₹${item.price * item.qty})%0A`; });
-    waMessage += `%0A*Delivery Fee:* ₹${config.deliveryFee}%0A*Total:* ₹${total}%0A%0AConfirm order.`;
-
-    window.open(`https://wa.me/917676808068?text=${waMessage}`, '_blank');
-
-    cart = []; updateCartUI(); toggleCart();
-    setTimeout(() => alert("Order registered! Redirecting to WhatsApp."), 500);
-}
-
-// 5. Auth & OTP Logic
+// Auth & Client Settings Logic (Retained from previous code)
 window.processAuth = function(e, action) {
     e.preventDefault();
     const config = JSON.parse(localStorage.getItem('sapna_config'));
@@ -265,7 +344,6 @@ window.logoutUser = function() {
     window.location.reload();
 }
 
-// 6. Client Settings Logic
 window.openClientSettings = function() {
     const user = JSON.parse(localStorage.getItem('sapna_client_user'));
     if(!user) return;
@@ -291,5 +369,3 @@ window.saveClientSettings = function(e) {
     document.getElementById('client-settings-modal').classList.remove('flex');
     if(typeof checkLoginStatus === 'function') checkLoginStatus(); 
 }
-
-document.addEventListener('DOMContentLoaded', () => { initializeData(); loadLiveOffers(); loadShopProducts(); });
