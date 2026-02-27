@@ -6,42 +6,22 @@
     <title>Sapna Home Needs | Next-Gen Groceries</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .bg-blob {
-            position: absolute;
-            filter: blur(80px);
-            z-index: -1;
-            opacity: 0.4;
-            animation: float 10s infinite ease-in-out alternate;
-        }
-        @keyframes float {
-            0% { transform: translateY(0px) scale(1); }
-            100% { transform: translateY(-30px) scale(1.1); }
-        }
-    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans relative overflow-x-hidden">
-
-    <div class="bg-blob bg-teal-300 w-96 h-96 rounded-full top-0 left-[-10%]"></div>
-    <div class="bg-blob bg-emerald-200 w-96 h-96 rounded-full top-40 right-[-10%]"></div>
 
     <nav class="fixed w-[95%] max-w-7xl mx-auto top-4 z-40 left-0 right-0 bg-white/80 backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 transition-all duration-300">
         <div class="px-6 lg:px-8 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-2 group cursor-pointer">
-                    <div class="bg-gradient-to-br from-teal-400 to-emerald-600 p-2 rounded-xl text-white shadow-lg shadow-teal-500/30 group-hover:rotate-12 transition-transform duration-300">
-                        <i class="fa-solid fa-leaf text-xl"></i>
-                    </div>
-                    <span class="font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-teal-700 to-emerald-600">Sapna Needs</span>
+                    <div class="bg-gradient-to-br from-teal-400 to-emerald-600 p-2 rounded-xl text-white shadow-lg"><i class="fa-solid fa-leaf text-xl"></i></div>
+                    <span class="font-extrabold text-xl tracking-tight text-teal-700">Sapna Needs</span>
                 </div>
                 
                 <div class="hidden md:flex space-x-8 items-center font-medium text-slate-600" id="desktop-menu">
                     <a href="shop.html?category=All" class="hover:text-teal-600 transition-colors">All Products</a>
                     <a href="#offers" class="hover:text-teal-600 transition-colors">Offers</a>
-                    <a href="#services" class="hover:text-teal-600 transition-colors">Services</a>
                     <div id="desktop-auth-container">
-                        <button onclick="toggleAuthModal()" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl shadow-lg hover:shadow-slate-500/30 hover:-translate-y-0.5 transition-all duration-300 text-sm">Login / Sign Up</button>
-                    </div>
+                        </div>
                 </div>
 
                 <div class="md:hidden flex items-center">
@@ -51,391 +31,133 @@
                 </div>
             </div>
 
-            <div id="mobile-menu" class="hidden md:hidden mt-4 pt-4 border-t border-slate-200/50 flex flex-col space-y-4 font-medium text-slate-600 pb-2">
-                <a href="shop.html?category=All" class="hover:text-teal-600 transition-colors px-2">All Products</a>
-                <a href="#offers" onclick="toggleMobileMenu()" class="hover:text-teal-600 transition-colors px-2">Offers</a>
-                <a href="#services" onclick="toggleMobileMenu()" class="hover:text-teal-600 transition-colors px-2">Services</a>
-                <div id="mobile-auth-container" class="mt-2">
-                    <button onclick="toggleAuthModal()" class="w-full bg-slate-900 text-white px-5 py-3 rounded-xl shadow-lg text-center font-bold">Login / Sign Up</button>
-                </div>
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pt-4 border-t flex flex-col space-y-4 font-medium text-slate-600 pb-2">
+                <a href="shop.html?category=All" class="px-2">Shop Now</a>
+                <div id="mobile-auth-container" class="mt-2"></div>
             </div>
         </div>
     </nav>
 
-    <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border border-slate-200 transform scale-95 transition-transform duration-300" id="auth-panel">
+    <div id="auth-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border border-slate-200">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-extrabold text-slate-900">Welcome Back</h2>
-                <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <h2 class="text-2xl font-extrabold text-slate-900" id="auth-title">Welcome</h2>
+                <button onclick="document.getElementById('auth-modal').classList.add('hidden')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             
-            <form id="auth-form" class="space-y-4">
+            <div id="auth-forms-container">
+                <div class="flex bg-slate-100 p-1 rounded-xl mb-6">
+                    <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 py-2 text-sm font-bold bg-white rounded-lg shadow-sm text-teal-600">Sign In</button>
+                    <button onclick="switchAuthTab('signup')" id="tab-signup" class="flex-1 py-2 text-sm font-bold text-slate-500 hover:text-teal-600">Register</button>
+                </div>
+
+                <form id="login-form" onsubmit="processAuth(event, 'login')" class="space-y-4">
+                    <input type="text" id="auth-phone" class="w-full px-4 py-3 rounded-xl border outline-none focus:border-teal-500" placeholder="Phone Number or 'admin'" required>
+                    <input type="password" id="auth-pass" class="w-full px-4 py-3 rounded-xl border outline-none focus:border-teal-500" placeholder="Password" required>
+                    <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl mt-4">Login securely</button>
+                </form>
+
+                <form id="signup-form" onsubmit="processAuth(event, 'signup')" class="space-y-4 hidden">
+                    <input type="text" id="reg-name" class="w-full px-4 py-3 rounded-xl border outline-none focus:border-teal-500" placeholder="Full Name" required>
+                    <input type="text" id="reg-phone" class="w-full px-4 py-3 rounded-xl border outline-none focus:border-teal-500" placeholder="Mobile Number" required>
+                    <input type="password" id="reg-pass" class="w-full px-4 py-3 rounded-xl border outline-none focus:border-teal-500" placeholder="Create Password" required>
+                    <button type="submit" class="w-full bg-teal-600 text-white font-bold py-3 rounded-xl mt-4">Create Account</button>
+                </form>
+            </div>
+
+            <div id="otp-container" class="hidden text-center space-y-4">
+                <div class="bg-teal-50 text-teal-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-message-sms text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-lg">Verify your Phone</h3>
+                <p class="text-sm text-slate-500 mb-4">We've sent a 4-digit code to your number.</p>
+                <form onsubmit="verifyOTP(event)">
+                    <input type="text" id="otp-input" maxlength="4" class="w-full px-4 py-3 rounded-xl border text-center text-2xl tracking-[0.5em] font-bold outline-none focus:border-teal-500" placeholder="••••" required>
+                    <button type="submit" class="w-full bg-teal-600 text-white font-bold py-3 rounded-xl mt-4">Verify OTP</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="client-settings-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border border-slate-200">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-extrabold text-slate-900"><i class="fa-solid fa-gear text-teal-500 mr-2"></i> My Settings</h2>
+                <button onclick="document.getElementById('client-settings-modal').classList.add('hidden')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            
+            <form onsubmit="saveClientSettings(event)" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Username / Email</label>
-                    <input type="text" id="auth-user" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 outline-none" placeholder="Enter username" required>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Full Name</label>
+                    <input type="text" id="set-name" class="w-full px-4 py-2 rounded-xl border outline-none focus:border-teal-500" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Password</label>
-                    <input type="password" id="auth-pass" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 outline-none" placeholder="Enter password" required>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Phone Number</label>
+                    <input type="text" id="set-phone" class="w-full px-4 py-2 rounded-xl border outline-none focus:border-teal-500 bg-slate-50" readonly title="Phone cannot be changed">
                 </div>
-                <div class="flex justify-between items-center text-sm mt-2">
-                    <label class="flex items-center gap-2 text-slate-500 cursor-pointer"><input type="checkbox" class="accent-teal-500"> Remember me</label>
-                    <a href="#" class="text-teal-600 hover:underline">Forgot Password?</a>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Default Delivery Address</label>
+                    <textarea id="set-address" rows="3" class="w-full px-4 py-2 rounded-xl border outline-none focus:border-teal-500" placeholder="E.g., Flat 402, Bheemanna Garden..."></textarea>
                 </div>
-                
-                <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-teal-500/30 mt-4">
-                    Sign In <i class="fa-solid fa-arrow-right ml-2"></i>
-                </button>
-                <div class="text-center mt-4">
-                    <p class="text-sm text-slate-500">Don't have an account? <a href="#" class="text-teal-600 font-bold hover:underline">Sign Up</a></p>
-                </div>
+                <button type="submit" class="w-full bg-teal-600 text-white font-bold py-3 rounded-xl mt-2">Save Profile</button>
             </form>
         </div>
     </div>
 
-    <header class="pt-40 pb-20 lg:pt-48 lg:pb-32 relative">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <div class="inline-block mb-4 px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-teal-700 text-sm font-semibold tracking-wide shadow-sm">
-                <i class="fa-solid fa-bolt text-amber-500 mr-1"></i> Open till 12 AM Every Day
-            </div>
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 mb-6 leading-tight">
-                Fresh Groceries, <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-emerald-400">Delivered Fast.</span>
-            </h1>
-            <p class="text-xl text-slate-600 mb-10 max-w-2xl mx-auto">Experience the future of local shopping in Shanti Nagar. Premium variety, instant WhatsApp ordering, and lightning-fast pickups.</p>
-            
-            <div class="flex flex-col sm:flex-row justify-center gap-6">
-                <a href="https://wa.me/9108884590962" class="group relative bg-green-500 text-white font-bold py-4 px-8 rounded-2xl shadow-[0_0_20px_rgba(34,197,94,0.4)] hover:shadow-[0_0_30px_rgba(34,197,94,0.6)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-                    <div class="absolute inset-0 bg-white/20 group-hover:translate-x-full transition-transform duration-500 -translate-x-full skew-x-12"></div>
-                    <span class="relative flex items-center justify-center gap-2 text-lg">
-                        <i class="fa-brands fa-whatsapp text-2xl group-hover:scale-110 transition-transform"></i> Order on WhatsApp
-                    </span>
-                </a>
-                <a href="#categories" class="bg-white text-slate-800 font-bold py-4 px-8 rounded-2xl shadow-lg border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 text-lg">
-                    Explore Store <i class="fa-solid fa-arrow-down animate-bounce"></i>
-                </a>
-            </div>
-        </div>
+    <header class="pt-40 pb-20 relative text-center">
+        <h1 class="text-5xl md:text-7xl font-extrabold text-slate-900 mb-6">Fresh Groceries,<br><span class="text-teal-500">Delivered Fast.</span></h1>
+        <a href="shop.html?category=All" class="inline-block bg-slate-900 text-white font-bold py-4 px-8 rounded-2xl shadow-lg mt-4">Shop Now <i class="fa-solid fa-arrow-right ml-2"></i></a>
     </header>
-
-    <section id="categories" class="py-20 bg-white/50 backdrop-blur-sm relative z-10 border-t border-white">
-        <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-4xl font-extrabold text-center mb-16 text-slate-900">Shop By Category</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                
-                <a href="shop.html?category=Fresh Veggies" class="group relative overflow-hidden bg-white rounded-3xl p-8 shadow-sm hover:shadow-[0_10px_40px_rgba(20,184,166,0.15)] transition-all duration-300 hover:-translate-y-2 border border-slate-100 flex flex-col items-center justify-center text-center">
-                    <div class="absolute inset-0 bg-gradient-to-br from-teal-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="w-20 h-20 rounded-2xl bg-green-50 flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors duration-300">
-                        <i class="fa-solid fa-carrot text-4xl text-green-500 transform group-hover:scale-125 group-hover:rotate-12 transition-all duration-300 relative z-10"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-lg relative z-10">Fresh Veggies</h3>
-                    <div class="mt-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 text-teal-600 text-sm font-semibold">Shop Now &rarr;</div>
-                </a>
-
-                <a href="shop.html?category=Fruits" class="group relative overflow-hidden bg-white rounded-3xl p-8 shadow-sm hover:shadow-[0_10px_40px_rgba(239,68,68,0.15)] transition-all duration-300 hover:-translate-y-2 border border-slate-100 flex flex-col items-center justify-center text-center">
-                    <div class="absolute inset-0 bg-gradient-to-br from-red-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="w-20 h-20 rounded-2xl bg-red-50 flex items-center justify-center mb-4 group-hover:bg-red-100 transition-colors duration-300">
-                        <i class="fa-solid fa-apple-whole text-4xl text-red-500 transform group-hover:scale-125 group-hover:-rotate-12 transition-all duration-300 relative z-10"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-lg relative z-10">Fresh Fruits</h3>
-                    <div class="mt-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 text-red-500 text-sm font-semibold">Shop Now &rarr;</div>
-                </a>
-
-                <a href="shop.html?category=Dairy %26 Oil" class="group relative overflow-hidden bg-white rounded-3xl p-8 shadow-sm hover:shadow-[0_10px_40px_rgba(234,179,8,0.15)] transition-all duration-300 hover:-translate-y-2 border border-slate-100 flex flex-col items-center justify-center text-center">
-                    <div class="absolute inset-0 bg-gradient-to-br from-yellow-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="w-20 h-20 rounded-2xl bg-yellow-50 flex items-center justify-center mb-4 group-hover:bg-yellow-100 transition-colors duration-300">
-                        <i class="fa-solid fa-bottle-droplet text-4xl text-yellow-500 transform group-hover:scale-125 transition-all duration-300 relative z-10"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-lg relative z-10">Dairy & Oil</h3>
-                    <div class="mt-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 text-yellow-600 text-sm font-semibold">Shop Now &rarr;</div>
-                </a>
-
-                <a href="shop.html?category=Staples" class="group relative overflow-hidden bg-white rounded-3xl p-8 shadow-sm hover:shadow-[0_10px_40px_rgba(249,115,22,0.15)] transition-all duration-300 hover:-translate-y-2 border border-slate-100 flex flex-col items-center justify-center text-center">
-                    <div class="absolute inset-0 bg-gradient-to-br from-orange-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="w-20 h-20 rounded-2xl bg-orange-50 flex items-center justify-center mb-4 group-hover:bg-orange-100 transition-colors duration-300">
-                        <i class="fa-solid fa-bowl-rice text-4xl text-orange-500 transform group-hover:scale-125 transition-all duration-300 relative z-10"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-lg relative z-10">Rice & Dals</h3>
-                    <div class="mt-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 text-orange-600 text-sm font-semibold">Shop Now &rarr;</div>
-                </a>
-
-                <a href="shop.html?category=Household" class="col-span-2 md:col-span-1 group relative overflow-hidden bg-white rounded-3xl p-8 shadow-sm hover:shadow-[0_10px_40px_rgba(59,130,246,0.15)] transition-all duration-300 hover:-translate-y-2 border border-slate-100 flex flex-col items-center justify-center text-center">
-                    <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors duration-300">
-                        <i class="fa-solid fa-soap text-4xl text-blue-500 transform group-hover:scale-125 group-hover:-rotate-12 transition-all duration-300 relative z-10"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-lg relative z-10">Household</h3>
-                    <div class="mt-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 text-blue-600 text-sm font-semibold">Shop Now &rarr;</div>
-                </a>
-
-            </div>
-        </div>
-    </section>
-
-    <section id="offers" class="py-20 bg-slate-900 text-white relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-full h-full opacity-20 pointer-events-none" style="background-image: radial-gradient(circle at top right, #14b8a6, transparent 40%);"></div>
-        <div class="max-w-7xl mx-auto px-4 relative z-10">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
-                <div>
-                    <h2 class="text-4xl font-extrabold mb-2">Flash Deals</h2>
-                    <p class="text-slate-400">Premium quality at unbeatable prices.</p>
-                </div>
-            </div>
-            
-            <div id="live-offers-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                </div>
-        </div>
-    </section>
-
-    <section id="services" class="py-20 bg-slate-50 relative z-10">
-        <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-4xl font-extrabold text-center mb-16 text-slate-900">How We Serve You</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="group bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 hover:-translate-y-2">
-                    <div class="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-teal-500 transition-colors duration-500">
-                        <i class="fa-solid fa-truck-fast text-2xl text-teal-600 group-hover:text-white group-hover:translate-x-2 transition-all"></i>
-                    </div>
-                    <h3 class="font-bold text-xl text-slate-800 mb-2">Swift Delivery</h3>
-                    <p class="text-slate-500 text-sm">Real-time tracking for your doorstep deliveries.</p>
-                </div>
-                
-                <div class="group bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 hover:-translate-y-2">
-                    <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-500 transition-colors duration-500">
-                        <i class="fa-solid fa-bag-shopping text-2xl text-blue-600 group-hover:text-white group-hover:-translate-y-2 transition-all"></i>
-                    </div>
-                    <h3 class="font-bold text-xl text-slate-800 mb-2">Smart Pick-up</h3>
-                    <p class="text-slate-500 text-sm">Order online, scan your QR code, and grab your bags.</p>
-                </div>
-
-                <div class="group bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 hover:-translate-y-2">
-                    <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-purple-500 transition-colors duration-500">
-                        <i class="fa-brands fa-nfc-symbol text-2xl text-purple-600 group-hover:text-white group-hover:scale-110 transition-all"></i>
-                    </div>
-                    <h3 class="font-bold text-xl text-slate-800 mb-2">Tap & Pay</h3>
-                    <p class="text-slate-500 text-sm">Seamless checkout with NFC and mobile wallets.</p>
-                </div>
-
-                <div class="group bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 hover:-translate-y-2">
-                    <div class="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-amber-500 transition-colors duration-500">
-                        <i class="fa-regular fa-clock text-2xl text-amber-600 group-hover:text-white group-hover:rotate-180 transition-all duration-700"></i>
-                    </div>
-                    <h3 class="font-bold text-xl text-slate-800 mb-2">Extended Hours</h3>
-                    <p class="text-slate-500 text-sm">Shop at your convenience until 12 AM.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-20 bg-white border-t border-slate-100">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-16">
-                <div class="inline-flex items-center gap-2 text-yellow-500 font-bold text-xl bg-yellow-50 px-6 py-2 rounded-full border border-yellow-200 mb-4">
-                    <span>4.1</span>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star-half-stroke"></i>
-                </div>
-                <h2 class="text-4xl font-extrabold text-slate-900">Community Verified</h2>
-                <p class="text-slate-500 mt-2">Based on 407 reviews from Shanti Nagar locals</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-slate-50 p-8 rounded-3xl shadow-sm relative hover:shadow-md transition duration-300">
-                    <i class="fa-solid fa-quote-left text-4xl text-teal-100 absolute top-6 left-6"></i>
-                    <div class="relative z-10 pt-4">
-                        <p class="text-slate-700 italic mb-6">"The variety is fantastic. You can find almost any grocery item you need here. The fresh veggies section is my favorite."</p>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center text-white font-bold">L</div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-900">Local Guide</p>
-                                <div class="flex text-yellow-400 text-xs"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-slate-50 p-8 rounded-3xl shadow-sm relative hover:shadow-md transition duration-300">
-                    <i class="fa-solid fa-quote-left text-4xl text-teal-100 absolute top-6 left-6"></i>
-                    <div class="relative z-10 pt-4">
-                        <p class="text-slate-700 italic mb-6">"Very good variety. It can be a bit expensive for certain premium items, but the convenience of them being open till midnight is unbeatable."</p>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">V</div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-900">Verified Customer</p>
-                                <div class="flex text-yellow-400 text-xs"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-slate-50 p-8 rounded-3xl shadow-sm relative hover:shadow-md transition duration-300">
-                    <i class="fa-solid fa-quote-left text-4xl text-teal-100 absolute top-6 left-6"></i>
-                    <div class="relative z-10 pt-4">
-                        <p class="text-slate-700 italic mb-6">"Great daily discounts if you know when to look. The staff is helpful and ordering via WhatsApp for delivery is super smooth."</p>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold">S</div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-900">Shanti Nagar Resident</p>
-                                <div class="flex text-yellow-400 text-xs"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer id="location" class="bg-slate-900 pt-20 pb-10 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
-            <div>
-                <div class="flex items-center gap-2 mb-6">
-                    <div class="bg-gradient-to-br from-teal-400 to-emerald-600 p-2 rounded-lg text-white">
-                        <i class="fa-solid fa-leaf"></i>
-                    </div>
-                    <span class="font-bold text-2xl text-white">Sapna Needs</span>
-                </div>
-                <p class="text-slate-400 leading-relaxed">Redefining the local grocery experience in Shanti Nagar with premium quality and unmatched convenience.</p>
-            </div>
-            
-            <div>
-                <h3 class="text-white font-bold text-lg mb-6">Visit Us</h3>
-                <p class="text-slate-400 mb-2"><i class="fa-solid fa-location-dot text-teal-500 mr-2"></i> 34, 5th Cross Rd, Bangiyappa Garden</p>
-                <p class="text-slate-400 mb-4 ml-6">Shanti Nagar, Bengaluru 560027</p>
-                <p class="text-teal-400 font-medium mb-2"><i class="fa-regular fa-clock mr-2"></i> Open Today • Closes 12 AM</p>
-                <p class="text-slate-400"><i class="fa-solid fa-phone text-teal-500 mr-2"></i> 088845 90962</p>
-                <a href ="https://maps.app.goo.gl/Hk4Be8N4uqh8gNJx6" class="text-teal-500 hover:text-teal-400 mt-2 inline-block"><i class="fa-solid fa-map-location-dot mr-2"></i> Get Directions</a>
-            </div>
-
-            <div>
-                <h3 class="text-white font-bold text-lg mb-6">Live Status</h3>
-                <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700 backdrop-blur-sm">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-slate-400 text-sm">Current Shoppers</span>
-                        <span class="relative flex h-3 w-3">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                        </span>
-                    </div>
-                    <p class="text-4xl font-extrabold text-white" id="live-visitors">14</p>
-                </div>
-            </div>
-        </div>
-        <div class="max-w-7xl mx-auto px-4 border-t border-slate-800/50 pt-8 flex flex-col md:flex-row justify-between items-center text-slate-500 text-sm">
-            <p>© 2026 Sapna Home Needs. All rights reserved.</p>
-            <div class="flex gap-4 mt-4 md:mt-0 text-xl">
-                <i class="fa-brands fa-google-pay hover:text-white transition-colors cursor-pointer"></i>
-                <i class="fa-brands fa-cc-visa hover:text-white transition-colors cursor-pointer"></i>
-                <i class="fa-brands fa-whatsapp hover:text-green-500 transition-colors cursor-pointer"></i>
-            </div>
-        </div>
-    </footer>
 
     <script src="app.js"></script>
 
     <script>
-        // 1. Mobile Menu Toggle
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const icon = document.getElementById('mobile-icon');
-            
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-xmark');
-            } else {
-                menu.classList.add('hidden');
-                icon.classList.remove('fa-xmark');
-                icon.classList.add('fa-bars');
-            }
-        }
-
-        // 2. Auth Modal Toggle
-        function toggleAuthModal() {
-            const modal = document.getElementById('auth-modal');
-            const panel = document.getElementById('auth-panel');
-            
-            if (modal.classList.contains('opacity-0')) {
-                modal.classList.remove('opacity-0', 'pointer-events-none');
-                panel.classList.remove('scale-95');
-                // Close mobile menu if open
-                document.getElementById('mobile-menu').classList.add('hidden');
-                document.getElementById('mobile-icon').classList.replace('fa-xmark', 'fa-bars');
-            } else {
-                modal.classList.add('opacity-0', 'pointer-events-none');
-                panel.classList.add('scale-95');
-            }
-        }
-
-        // 3. Login Logic (Routing based on User Role)
-        document.getElementById('auth-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const user = document.getElementById('auth-user').value.trim();
-            const pass = document.getElementById('auth-pass').value;
-
-            // Admin Logic
-            if (user.toLowerCase() === 'admin' && pass === 'sapna123') {
-                window.location.href = 'admin.html';
-            } 
-            // Client Logic (Any other username)
-            else {
-                // Save client info to browser storage
-                localStorage.setItem('sapna_client_user', JSON.stringify({ name: user }));
-                toggleAuthModal(); // Close modal
-                checkLoginStatus(); // Update the UI immediately
-            }
-        });
-
-        // 4. Logout Logic
-        function logoutUser() {
-            localStorage.removeItem('sapna_client_user');
-            checkLoginStatus(); // Update UI back to default
-        }
-
-        // 5. Update Navbar based on who is logged in
+        // Check Status and update Navbar
         function checkLoginStatus() {
             const clientData = JSON.parse(localStorage.getItem('sapna_client_user'));
-            const desktopContainer = document.getElementById('desktop-auth-container');
-            const mobileContainer = document.getElementById('mobile-auth-container');
+            const desktopAuth = document.getElementById('desktop-auth-container');
+            const mobileAuth = document.getElementById('mobile-auth-container');
 
             if (clientData) {
-                // User IS logged in: Show Profile and Logout
-                const loggedInHTML = `
-                    <div class="flex items-center gap-4">
+                const userHtml = `
+                    <div class="relative group cursor-pointer">
                         <div class="flex items-center gap-2 text-teal-600 font-bold bg-teal-50 px-4 py-2 rounded-xl border border-teal-100">
-                            <i class="fa-solid fa-circle-user text-xl"></i> Hi, ${clientData.name.split(' ')[0]}
+                            <i class="fa-solid fa-circle-user"></i> ${clientData.name.split(' ')[0]} <i class="fa-solid fa-chevron-down text-xs ml-1"></i>
                         </div>
-                        <button onclick="logoutUser()" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                            <button onclick="openClientSettings()" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-slate-700 font-medium rounded-t-xl"><i class="fa-solid fa-gear w-5"></i> Settings</button>
+                            <button onclick="logoutUser()" class="w-full text-left px-4 py-3 hover:bg-red-50 text-red-500 font-medium rounded-b-xl border-t border-slate-100"><i class="fa-solid fa-arrow-right-from-bracket w-5"></i> Logout</button>
+                        </div>
                     </div>
                 `;
-                desktopContainer.innerHTML = loggedInHTML;
-                mobileContainer.innerHTML = `
-                    <div class="bg-slate-100 p-4 rounded-xl mb-2 text-center text-teal-700 font-bold">Logged in as ${clientData.name}</div>
-                    <button onclick="logoutUser()" class="w-full bg-red-50 text-red-500 border border-red-200 px-5 py-3 rounded-xl text-center font-bold">Logout</button>
+                desktopAuth.innerHTML = userHtml;
+                mobileAuth.innerHTML = `
+                    <button onclick="openClientSettings()" class="w-full bg-slate-100 px-5 py-3 rounded-xl font-bold mb-2">My Settings</button>
+                    <button onclick="logoutUser()" class="w-full bg-red-50 text-red-500 border border-red-200 px-5 py-3 rounded-xl font-bold">Logout</button>
                 `;
             } else {
-                // User is NOT logged in: Show Login button
-                desktopContainer.innerHTML = `<button onclick="toggleAuthModal()" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl shadow-lg hover:shadow-slate-500/30 transition-all duration-300 text-sm">Login / Sign Up</button>`;
-                mobileContainer.innerHTML = `<button onclick="toggleAuthModal()" class="w-full bg-slate-900 text-white px-5 py-3 rounded-xl shadow-lg text-center font-bold">Login / Sign Up</button>`;
+                desktopAuth.innerHTML = `<button onclick="document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').classList.add('flex');" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl shadow-lg">Login / Sign Up</button>`;
+                mobileAuth.innerHTML = `<button onclick="document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').classList.add('flex');" class="w-full bg-slate-900 text-white px-5 py-3 rounded-xl shadow-lg text-center font-bold">Login / Sign Up</button>`;
             }
         }
 
-        // Run checking functions when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            checkLoginStatus(); // Check if a user is already logged in
-            
-            // Visitor Counter Logic
-            const visitorEl = document.getElementById('live-visitors');
-            if (visitorEl) {
-                setInterval(() => {
-                    let current = parseInt(visitorEl.innerText, 10);
-                    let change = Math.floor(Math.random() * 5) - 2; 
-                    let nextValue = current + change;
-                    if (nextValue < 5) nextValue = 5;
-                    if (nextValue > 35) nextValue = 35;
-                    visitorEl.innerText = nextValue;
-                }, 4000); 
+        function switchAuthTab(tab) {
+            if(tab === 'login') {
+                document.getElementById('login-form').classList.remove('hidden');
+                document.getElementById('signup-form').classList.add('hidden');
+                document.getElementById('tab-login').className = "flex-1 py-2 text-sm font-bold bg-white rounded-lg shadow-sm text-teal-600";
+                document.getElementById('tab-signup').className = "flex-1 py-2 text-sm font-bold text-slate-500 hover:text-teal-600";
+                document.getElementById('auth-title').innerText = "Welcome Back";
+            } else {
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('signup-form').classList.remove('hidden');
+                document.getElementById('tab-signup').className = "flex-1 py-2 text-sm font-bold bg-white rounded-lg shadow-sm text-teal-600";
+                document.getElementById('tab-login').className = "flex-1 py-2 text-sm font-bold text-slate-500 hover:text-teal-600";
+                document.getElementById('auth-title').innerText = "Create Account";
             }
-        });
+        }
+
+        document.addEventListener('DOMContentLoaded', checkLoginStatus);
     </script>
 </body>
 </html>
