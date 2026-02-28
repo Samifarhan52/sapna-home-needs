@@ -6,32 +6,40 @@
     <title>Sapna Home Needs | 3D Experience</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans relative overflow-x-hidden">
+<body class="text-slate-800 font-sans relative overflow-x-hidden">
 
-    <nav data-aos="fade-down" class="fixed w-[95%] max-w-7xl mx-auto top-6 z-50 left-0 right-0 bg-white/90 backdrop-blur-md rounded-3xl border-2 border-slate-100 shadow-[0_10px_0_0_rgba(226,232,240,0.8)] transition-all">
+    <div id="vanta-bg" class="fixed inset-0 z-[-1]"></div>
+
+    <nav data-aos="fade-down" class="fixed w-[95%] max-w-7xl mx-auto top-6 z-50 left-0 right-0 bg-white/80 backdrop-blur-xl rounded-3xl border-2 border-white shadow-[0_10px_0_0_rgba(226,232,240,0.6)] transition-all">
         <div class="px-6 lg:px-8 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3 cursor-pointer">
                 <div class="bg-teal-500 p-3 rounded-2xl text-white shadow-inner border-b-4 border-teal-700 transform -rotate-6 hover:rotate-0 transition-transform"><i class="fa-solid fa-leaf text-2xl"></i></div>
                 <span class="font-extrabold text-2xl tracking-tight text-slate-800 drop-shadow-sm">Sapna Needs</span>
             </div>
             
-            <div class="hidden md:flex space-x-8 items-center font-bold text-slate-500" id="desktop-menu">
-                <a href="shop.html?category=All" class="hover:text-teal-600 transition-colors px-3 py-2 rounded-xl hover:bg-slate-100">All Products</a>
-                <a href="#offers" class="hover:text-teal-600 transition-colors px-3 py-2 rounded-xl hover:bg-slate-100">Offers</a>
+            <div class="hidden md:flex space-x-8 items-center font-bold text-slate-600" id="desktop-menu">
+                <a href="shop.html?category=All" class="hover:text-teal-600 transition-colors px-3 py-2 rounded-xl hover:bg-white/50">All Products</a>
+                <a href="#offers" class="hover:text-teal-600 transition-colors px-3 py-2 rounded-xl hover:bg-white/50">Offers</a>
+                <a href="#services" class="hover:text-teal-600 transition-colors px-3 py-2 rounded-xl hover:bg-white/50">Services</a>
                 <div id="desktop-auth-container"></div>
             </div>
 
             <div class="md:hidden flex items-center">
-                <button onclick="toggleMobileMenu()" class="bg-slate-200 text-slate-700 w-12 h-12 rounded-xl border-b-4 border-slate-300 active:border-b-0 active:translate-y-[4px] flex items-center justify-center transition-all"><i id="mobile-icon" class="fa-solid fa-bars text-xl"></i></button>
+                <button onclick="toggleMobileMenu()" class="bg-white text-slate-700 w-12 h-12 rounded-xl border-b-4 border-slate-200 active:border-b-0 active:translate-y-[4px] flex items-center justify-center transition-all"><i id="mobile-icon" class="fa-solid fa-bars text-xl"></i></button>
             </div>
         </div>
         <div id="mobile-menu" class="hidden md:hidden mt-2 pt-4 border-t-2 border-slate-100 flex flex-col space-y-2 font-bold text-slate-600 pb-4 px-6 bg-white rounded-b-3xl">
             <a href="shop.html?category=All" class="bg-slate-50 px-4 py-3 rounded-xl border-2 border-slate-100">All Products</a>
             <a href="#offers" class="bg-slate-50 px-4 py-3 rounded-xl border-2 border-slate-100">Offers</a>
+            <a href="#services" class="bg-slate-50 px-4 py-3 rounded-xl border-2 border-slate-100">Services</a>
             <div id="mobile-auth-container" class="mt-4 border-t-2 border-slate-100 pt-4"></div>
         </div>
     </nav>
@@ -64,9 +72,7 @@
             </div>
 
             <div id="otp-container" class="hidden text-center space-y-6">
-                <div class="bg-teal-100 text-teal-600 w-24 h-24 rounded-[2rem] flex items-center justify-center mx-auto mb-4 border-b-8 border-teal-200 transform rotate-12 shadow-sm">
-                    <i class="fa-solid fa-message-sms text-4xl transform -rotate-12"></i>
-                </div>
+                <div class="bg-teal-100 text-teal-600 w-24 h-24 rounded-[2rem] flex items-center justify-center mx-auto mb-4 border-b-8 border-teal-200 transform rotate-12 shadow-sm"><i class="fa-solid fa-message-sms text-4xl transform -rotate-12"></i></div>
                 <h3 class="font-extrabold text-2xl text-slate-800">Verify Phone</h3>
                 <form onsubmit="verifyOTP(event)">
                     <input type="text" id="otp-input" maxlength="4" class="w-full px-4 py-4 bg-slate-100 rounded-2xl border-2 border-slate-200 shadow-inner text-center text-4xl tracking-[1em] font-black outline-none focus:bg-white focus:border-teal-500 transition-all mb-6" placeholder="••••" required>
@@ -91,84 +97,238 @@
         </div>
     </div>
 
-    <header class="pt-48 pb-20 lg:pt-56 lg:pb-32 text-center relative z-10 overflow-hidden">
+    <header class="pt-48 pb-20 lg:pt-56 lg:pb-32 text-center relative z-10">
         <div class="max-w-7xl mx-auto px-4">
-            <div data-aos="zoom-in" class="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-2xl bg-white border-2 border-slate-100 shadow-[0_6px_0_0_#e2e8f0] text-slate-700 font-bold tracking-wide">
+            <div data-aos="zoom-in" class="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-2xl bg-white/90 backdrop-blur-sm border-2 border-white shadow-[0_6px_0_0_rgba(226,232,240,0.6)] text-slate-700 font-bold tracking-wide">
                 <div class="w-3 h-3 bg-amber-500 rounded-full animate-pulse shadow-[0_0_10px_#f59e0b]"></div> Open till Midnight
             </div>
-            <h1 data-aos="fade-up" data-aos-delay="100" class="text-6xl md:text-8xl font-black tracking-tight text-slate-900 mb-8 leading-[1.1] drop-shadow-sm">
+            <h1 data-aos="fade-up" data-aos-delay="100" class="text-6xl md:text-8xl font-black tracking-tight text-slate-900 mb-8 leading-[1.1] drop-shadow-lg">
                 Fresh Groceries, <br>
-                <span class="text-teal-500 inline-block transform hover:rotate-2 hover:scale-105 transition-transform duration-300">Delivered Fast.</span>
+                <span class="text-teal-600 bg-white/50 backdrop-blur-sm px-4 rounded-2xl inline-block transform hover:rotate-2 hover:scale-105 transition-transform duration-300 border-4 border-white mt-2">Delivered Fast.</span>
             </h1>
             
             <div data-aos="fade-up" data-aos-delay="200" class="flex flex-col sm:flex-row justify-center gap-6 mt-10">
                 <a href="shop.html?category=All" class="bg-teal-500 text-white font-extrabold text-xl py-5 px-10 rounded-[2rem] border-b-[8px] border-teal-700 hover:bg-teal-400 active:border-b-[0px] active:translate-y-[8px] transition-all shadow-xl flex items-center justify-center gap-3">
                     <i class="fa-solid fa-basket-shopping text-2xl"></i> Start Shopping
                 </a>
-                <a href="#categories" class="bg-white text-slate-800 font-extrabold text-xl py-5 px-10 rounded-[2rem] border-2 border-slate-200 border-b-[8px] active:border-b-[2px] active:translate-y-[6px] transition-all shadow-sm flex items-center justify-center gap-3">
+                <a href="#categories" class="bg-white/80 backdrop-blur-sm text-slate-800 font-extrabold text-xl py-5 px-10 rounded-[2rem] border-2 border-white border-b-[8px] active:border-b-[2px] active:translate-y-[6px] transition-all shadow-lg flex items-center justify-center gap-3">
                     Explore <i class="fa-solid fa-arrow-down text-teal-500"></i>
                 </a>
             </div>
         </div>
     </header>
 
-    <section id="categories" class="py-24 bg-white relative z-10 rounded-t-[3rem] shadow-[0_-20px_50px_-15px_rgba(0,0,0,0.05)] border-t-8 border-slate-100">
+    <section id="categories" class="py-24 bg-white/90 backdrop-blur-xl relative z-10 rounded-t-[3rem] shadow-[0_-20px_50px_-15px_rgba(0,0,0,0.1)] border-t-8 border-white">
         <div class="max-w-7xl mx-auto px-4">
             <h2 data-aos="fade-right" class="text-5xl font-black mb-16 text-slate-900 drop-shadow-sm">Aisles <span class="text-slate-400">& Categories</span></h2>
             
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 lg:gap-8">
-                <a href="shop.html?category=Fresh Veggies" data-aos="fade-up" data-aos-delay="100" class="tilt-card bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 shadow-[0_12px_0_0_#cbd5e1] hover:shadow-[0_20px_0_0_#94a3b8] hover:-translate-y-3 transition-all flex flex-col items-center">
-                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)">
-                        <i class="fa-solid fa-carrot text-5xl text-green-500"></i>
-                    </div>
+                <a href="shop.html?category=Fresh Veggies" data-aos="fade-up" data-aos-delay="100" class="tilt-card bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 border-b-8 shadow-sm hover:-translate-y-3 transition-all flex flex-col items-center">
+                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)"><i class="fa-solid fa-carrot text-5xl text-green-500"></i></div>
                     <h3 class="font-extrabold text-xl text-slate-800" style="transform: translateZ(20px)">Veggies</h3>
                 </a>
-
-                <a href="shop.html?category=Fruits" data-aos="fade-up" data-aos-delay="200" class="tilt-card bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 shadow-[0_12px_0_0_#cbd5e1] hover:shadow-[0_20px_0_0_#94a3b8] hover:-translate-y-3 transition-all flex flex-col items-center">
-                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)">
-                        <i class="fa-solid fa-apple-whole text-5xl text-red-500"></i>
-                    </div>
+                <a href="shop.html?category=Fruits" data-aos="fade-up" data-aos-delay="200" class="tilt-card bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 border-b-8 shadow-sm hover:-translate-y-3 transition-all flex flex-col items-center">
+                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)"><i class="fa-solid fa-apple-whole text-5xl text-red-500"></i></div>
                     <h3 class="font-extrabold text-xl text-slate-800" style="transform: translateZ(20px)">Fruits</h3>
                 </a>
-
-                <a href="shop.html?category=Dairy %26 Oil" data-aos="fade-up" data-aos-delay="300" class="tilt-card bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 shadow-[0_12px_0_0_#cbd5e1] hover:shadow-[0_20px_0_0_#94a3b8] hover:-translate-y-3 transition-all flex flex-col items-center">
-                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)">
-                        <i class="fa-solid fa-bottle-droplet text-5xl text-yellow-500"></i>
-                    </div>
+                <a href="shop.html?category=Dairy %26 Oil" data-aos="fade-up" data-aos-delay="300" class="tilt-card bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 border-b-8 shadow-sm hover:-translate-y-3 transition-all flex flex-col items-center">
+                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)"><i class="fa-solid fa-bottle-droplet text-5xl text-yellow-500"></i></div>
                     <h3 class="font-extrabold text-xl text-slate-800" style="transform: translateZ(20px)">Dairy & Oil</h3>
                 </a>
-
-                <a href="shop.html?category=Staples" data-aos="fade-up" data-aos-delay="400" class="tilt-card bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 shadow-[0_12px_0_0_#cbd5e1] hover:shadow-[0_20px_0_0_#94a3b8] hover:-translate-y-3 transition-all flex flex-col items-center">
-                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)">
-                        <i class="fa-solid fa-bowl-rice text-5xl text-orange-500"></i>
-                    </div>
+                <a href="shop.html?category=Staples" data-aos="fade-up" data-aos-delay="400" class="tilt-card bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 border-b-8 shadow-sm hover:-translate-y-3 transition-all flex flex-col items-center">
+                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)"><i class="fa-solid fa-bowl-rice text-5xl text-orange-500"></i></div>
                     <h3 class="font-extrabold text-xl text-slate-800" style="transform: translateZ(20px)">Staples</h3>
                 </a>
-
-                <a href="shop.html?category=Household" data-aos="fade-up" data-aos-delay="500" class="tilt-card col-span-2 md:col-span-1 bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 shadow-[0_12px_0_0_#cbd5e1] hover:shadow-[0_20px_0_0_#94a3b8] hover:-translate-y-3 transition-all flex flex-col items-center">
-                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)">
-                        <i class="fa-solid fa-soap text-5xl text-blue-500"></i>
-                    </div>
+                <a href="shop.html?category=Household" data-aos="fade-up" data-aos-delay="500" class="tilt-card col-span-2 md:col-span-1 bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 border-b-8 shadow-sm hover:-translate-y-3 transition-all flex flex-col items-center">
+                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)"><i class="fa-solid fa-soap text-5xl text-blue-500"></i></div>
                     <h3 class="font-extrabold text-xl text-slate-800" style="transform: translateZ(20px)">Household</h3>
                 </a>
             </div>
         </div>
     </section>
 
-    <section id="offers" class="py-24 bg-slate-900 border-t-[16px] border-slate-800 rounded-t-[3rem] -mt-10 relative z-20">
+    <section id="offers" class="py-24 bg-slate-900 border-t-[16px] border-slate-800 relative z-20">
         <div class="max-w-7xl mx-auto px-4 relative">
             <h2 data-aos="fade-right" class="text-5xl font-black mb-12 text-white drop-shadow-md">Flash Deals <i class="fa-solid fa-bolt text-amber-400"></i></h2>
             <div id="live-offers-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
 
+    <section id="services" class="py-24 bg-white/90 backdrop-blur-xl relative z-10 border-t-8 border-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 data-aos="zoom-in" class="text-5xl font-black text-center mb-16 text-slate-900">How We Serve You</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div data-aos="fade-up" data-aos-delay="100" class="tilt-card bg-white p-8 rounded-[2rem] border-2 border-slate-100 border-b-[8px] border-b-slate-200 shadow-sm text-center">
+                    <div class="w-20 h-20 bg-teal-50 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-inner"><i class="fa-solid fa-truck-fast text-4xl text-teal-600"></i></div>
+                    <h3 class="font-extrabold text-xl mb-2 text-slate-800">Swift Delivery</h3>
+                    <p class="text-slate-500 font-medium">Real-time tracking for your doorstep deliveries.</p>
+                </div>
+                
+                <div data-aos="fade-up" data-aos-delay="200" class="tilt-card bg-white p-8 rounded-[2rem] border-2 border-slate-100 border-b-[8px] border-b-slate-200 shadow-sm text-center">
+                    <div class="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-inner"><i class="fa-solid fa-bag-shopping text-4xl text-blue-600"></i></div>
+                    <h3 class="font-extrabold text-xl mb-2 text-slate-800">Smart Pick-up</h3>
+                    <p class="text-slate-500 font-medium">Order online, scan your code, and grab your bags.</p>
+                </div>
+
+                <div data-aos="fade-up" data-aos-delay="300" class="tilt-card bg-white p-8 rounded-[2rem] border-2 border-slate-100 border-b-[8px] border-b-slate-200 shadow-sm text-center">
+                    <div class="w-20 h-20 bg-purple-50 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-inner"><i class="fa-brands fa-nfc-symbol text-4xl text-purple-600"></i></div>
+                    <h3 class="font-extrabold text-xl mb-2 text-slate-800">Tap & Pay</h3>
+                    <p class="text-slate-500 font-medium">Seamless checkout with NFC and mobile wallets.</p>
+                </div>
+
+                <div data-aos="fade-up" data-aos-delay="400" class="tilt-card bg-white p-8 rounded-[2rem] border-2 border-slate-100 border-b-[8px] border-b-slate-200 shadow-sm text-center">
+                    <div class="w-20 h-20 bg-amber-50 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-inner"><i class="fa-regular fa-clock text-4xl text-amber-600"></i></div>
+                    <h3 class="font-extrabold text-xl mb-2 text-slate-800">Extended Hours</h3>
+                    <p class="text-slate-500 font-medium">Shop at your convenience until 12 AM.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-slate-50 border-t-[16px] border-slate-200 relative z-10">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-down">
+                <div class="inline-flex items-center gap-2 text-yellow-500 font-black text-xl bg-white px-6 py-3 rounded-2xl border-2 border-yellow-200 shadow-[0_6px_0_0_#fef08a] mb-6 transform -rotate-2">
+                    <span>4.1</span><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                </div>
+                <h2 class="text-5xl font-black text-slate-900">Community Verified</h2>
+                <p class="text-slate-500 mt-3 font-bold">Based on 407 reviews from Shanti Nagar locals</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div data-aos="flip-up" data-aos-delay="100" class="bg-white p-8 rounded-[2rem] border-2 border-slate-100 border-b-[8px] border-b-slate-200 shadow-sm relative">
+                    <i class="fa-solid fa-quote-left text-5xl text-teal-100 absolute top-6 left-6"></i>
+                    <div class="relative z-10 pt-6">
+                        <p class="text-slate-700 italic mb-6 font-medium leading-relaxed">"The variety is fantastic. You can find almost any grocery item you need here. The fresh veggies section is my favorite."</p>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-teal-500 border-b-4 border-teal-700 flex items-center justify-center text-white font-black shadow-inner">L</div>
+                            <div>
+                                <p class="text-sm font-black text-slate-900">Local Guide</p>
+                                <div class="flex text-yellow-400 text-xs mt-1"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div data-aos="flip-up" data-aos-delay="200" class="bg-white p-8 rounded-[2rem] border-2 border-slate-100 border-b-[8px] border-b-slate-200 shadow-sm relative">
+                    <i class="fa-solid fa-quote-left text-5xl text-blue-100 absolute top-6 left-6"></i>
+                    <div class="relative z-10 pt-6">
+                        <p class="text-slate-700 italic mb-6 font-medium leading-relaxed">"Very good variety. It can be a bit expensive for certain premium items, but the convenience of them being open till midnight is unbeatable."</p>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-blue-500 border-b-4 border-blue-700 flex items-center justify-center text-white font-black shadow-inner">V</div>
+                            <div>
+                                <p class="text-sm font-black text-slate-900">Verified Customer</p>
+                                <div class="flex text-yellow-400 text-xs mt-1"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-aos="flip-up" data-aos-delay="300" class="bg-white p-8 rounded-[2rem] border-2 border-slate-100 border-b-[8px] border-b-slate-200 shadow-sm relative">
+                    <i class="fa-solid fa-quote-left text-5xl text-purple-100 absolute top-6 left-6"></i>
+                    <div class="relative z-10 pt-6">
+                        <p class="text-slate-700 italic mb-6 font-medium leading-relaxed">"Great daily discounts if you know when to look. The staff is helpful and ordering via WhatsApp for delivery is super smooth."</p>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-purple-500 border-b-4 border-purple-700 flex items-center justify-center text-white font-black shadow-inner">S</div>
+                            <div>
+                                <p class="text-sm font-black text-slate-900">Shanti Nagar Resident</p>
+                                <div class="flex text-yellow-400 text-xs mt-1"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="location" class="bg-slate-900 pt-24 pb-12 rounded-t-[3rem] relative z-20 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+            <div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="bg-gradient-to-br from-teal-400 to-emerald-600 p-3 rounded-2xl text-white border-b-4 border-teal-800 shadow-inner">
+                        <i class="fa-solid fa-leaf text-2xl"></i>
+                    </div>
+                    <span class="font-black text-3xl text-white tracking-tight">Sapna Needs</span>
+                </div>
+                <p class="text-slate-400 leading-relaxed font-medium">Redefining the local grocery experience in Shanti Nagar with premium quality, 3D interactive ordering, and unmatched convenience.</p>
+            </div>
+            
+            <div>
+                <h3 class="text-white font-black text-xl mb-6 border-b border-slate-700 pb-2 inline-block">Visit Us</h3>
+                <div class="space-y-4 font-medium">
+                    <p class="text-slate-400 flex items-start gap-3"><i class="fa-solid fa-location-dot text-teal-500 mt-1 text-lg"></i> 34, 5th Cross Rd, Bangiyappa Garden, Shanti Nagar, Bengaluru 560027</p>
+                    <p class="text-teal-400 bg-teal-500/10 p-3 rounded-xl border border-teal-500/20 inline-block"><i class="fa-regular fa-clock mr-2"></i> Open Today • Closes 12 AM</p>
+                    <p class="text-slate-300 flex items-center gap-3"><i class="fa-solid fa-phone text-teal-500 text-lg"></i> 088845 90962</p>
+                    <a href ="https://maps.app.goo.gl/Hk4Be8N4uqh8gNJx6" target="_blank" class="text-slate-900 bg-white hover:bg-teal-50 font-extrabold px-5 py-3 rounded-xl border-b-4 border-slate-300 active:border-b-0 active:translate-y-1 transition-all mt-2 inline-flex items-center gap-2"><i class="fa-solid fa-map-location-dot text-teal-600"></i> Get Directions</a>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-white font-black text-xl mb-6 border-b border-slate-700 pb-2 inline-block">Live Status</h3>
+                <div class="bg-slate-800 rounded-[2rem] p-8 border-b-8 border-slate-950 shadow-inner text-center">
+                    <div class="flex items-center justify-center gap-3 mb-4">
+                        <span class="text-slate-400 font-bold">Current Shoppers</span>
+                        <span class="relative flex h-4 w-4">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-4 w-4 bg-green-500 border-2 border-slate-800"></span>
+                        </span>
+                    </div>
+                    <p class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-green-400 to-teal-600 drop-shadow-md" id="live-visitors">14</p>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-slate-500 font-bold">
+            <p>© 2026 Sapna Home Needs. All rights reserved.</p>
+            <div class="flex gap-4 mt-6 md:mt-0 text-3xl">
+                <i class="fa-brands fa-google-pay hover:text-white transition-colors cursor-pointer transform hover:scale-110"></i>
+                <i class="fa-brands fa-cc-visa hover:text-white transition-colors cursor-pointer transform hover:scale-110"></i>
+                <i class="fa-brands fa-whatsapp hover:text-green-500 transition-colors cursor-pointer transform hover:scale-110"></i>
+            </div>
+        </div>
+    </footer>
+
     <script src="app.js"></script>
+
     <script>
-        // Initialize 3D Animations
         document.addEventListener('DOMContentLoaded', () => {
+            // 1. Initialize 3D Vanta Background
+            VANTA.NET({
+                el: "#vanta-bg",
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 1.00,
+                color: 0x14b8a6, // Teal 500
+                backgroundColor: 0xf1f5f9, // Slate 100
+                points: 15.00,
+                maxDistance: 22.00,
+                spacing: 18.00
+            });
+
+            // 2. Initialize AOS Scroll Animations
             AOS.init({ duration: 800, once: true, offset: 50 });
+            
+            // 3. Initialize VanillaTilt Cards
             VanillaTilt.init(document.querySelectorAll(".tilt-card"), { max: 15, speed: 400, glare: true, "max-glare": 0.15, perspective: 1000 });
+
+            // 4. Check Login Status
             checkLoginStatus();
+
+            // 5. Live Visitor Counter Logic
+            const visitorEl = document.getElementById('live-visitors');
+            if (visitorEl) {
+                setInterval(() => {
+                    let current = parseInt(visitorEl.innerText, 10);
+                    let change = Math.floor(Math.random() * 5) - 2; 
+                    let nextValue = current + change;
+                    if (nextValue < 5) nextValue = 5;
+                    if (nextValue > 35) nextValue = 35;
+                    visitorEl.innerText = nextValue;
+                }, 4000); 
+            }
         });
 
         // Modals & Menu Logic
