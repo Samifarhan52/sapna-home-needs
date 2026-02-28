@@ -3,459 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sapna Home Needs | Next-Gen Groceries</title>
+    <title>Sapna Home Needs | 3D Experience</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Custom animated background blob for the futuristic feel */
-        .bg-blob {
-            position: absolute;
-            filter: blur(80px);
-            z-index: -1;
-            opacity: 0.4;
-            animation: float 10s infinite ease-in-out alternate;
-        }
-        @keyframes float {
-            0% { transform: translateY(0px) scale(1); }
-            100% { transform: translateY(-30px) scale(1.1); }
-        }
-    </style>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans relative overflow-x-hidden">
+<body class="bg-slate-100 text-slate-800 font-sans relative overflow-x-hidden">
 
-    <div class="bg-blob bg-teal-300 w-96 h-96 rounded-full top-0 left-[-10%]"></div>
-    <div class="bg-blob bg-emerald-200 w-96 h-96 rounded-full top-40 right-[-10%]"></div>
-
-    <nav class="fixed w-[95%] max-w-7xl mx-auto top-4 z-40 left-0 right-0 bg-white/80 backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 transition-all duration-300">
-        <div class="px-6 lg:px-8 py-4">
-            <div class="flex justify-between items-center">
-                
-                <div class="flex items-center gap-2 group cursor-pointer">
-                    <div class="bg-gradient-to-br from-teal-400 to-emerald-600 p-2 rounded-xl text-white shadow-lg shadow-teal-500/30 group-hover:rotate-12 transition-transform duration-300">
-                        <i class="fa-solid fa-leaf text-xl"></i>
-                    </div>
-                    <span class="font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-teal-700 to-emerald-600">Sapna Needs</span>
-                </div>
-                
-                <div class="hidden md:flex space-x-8 items-center font-medium text-slate-600" id="desktop-menu">
-                    <a href="shop.html?category=All" class="hover:text-teal-600 transition-colors">All Products</a>
-                    <a href="#offers" class="hover:text-teal-600 transition-colors">Offers</a>
-                    <a href="#services" class="hover:text-teal-600 transition-colors">Services</a>
-                    <a href="#location" class="hover:text-teal-600 transition-colors">Location</a>
-                    <div id="desktop-auth-container"></div>
-                </div>
-
-                <div class="md:hidden flex items-center">
-                    <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-teal-600 focus:outline-none transition">
-                        <i id="mobile-icon" class="fa-solid fa-bars text-2xl"></i>
-                    </button>
-                </div>
+    <nav data-aos="fade-down" class="fixed w-[95%] max-w-7xl mx-auto top-6 z-50 left-0 right-0 bg-white/90 backdrop-blur-md rounded-3xl border-2 border-slate-100 shadow-[0_10px_0_0_rgba(226,232,240,0.8)] transition-all">
+        <div class="px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer">
+                <div class="bg-teal-500 p-3 rounded-2xl text-white shadow-inner border-b-4 border-teal-700 transform -rotate-6 hover:rotate-0 transition-transform"><i class="fa-solid fa-leaf text-2xl"></i></div>
+                <span class="font-extrabold text-2xl tracking-tight text-slate-800 drop-shadow-sm">Sapna Needs</span>
+            </div>
+            
+            <div class="hidden md:flex space-x-8 items-center font-bold text-slate-500" id="desktop-menu">
+                <a href="shop.html?category=All" class="hover:text-teal-600 transition-colors px-3 py-2 rounded-xl hover:bg-slate-100">All Products</a>
+                <a href="#offers" class="hover:text-teal-600 transition-colors px-3 py-2 rounded-xl hover:bg-slate-100">Offers</a>
+                <div id="desktop-auth-container"></div>
             </div>
 
-            <div id="mobile-menu" class="hidden md:hidden mt-4 pt-4 border-t border-slate-200/50 flex flex-col space-y-4 font-medium text-slate-600 pb-2 px-2">
-                <a href="shop.html?category=All" class="hover:text-teal-600 transition-colors block py-2">All Products</a>
-                <a href="#offers" onclick="toggleMobileMenu()" class="hover:text-teal-600 transition-colors block py-2">Offers</a>
-                <a href="#services" onclick="toggleMobileMenu()" class="hover:text-teal-600 transition-colors block py-2">Services</a>
-                <a href="#location" onclick="toggleMobileMenu()" class="hover:text-teal-600 transition-colors block py-2">Location</a>
-                <div id="mobile-auth-container" class="mt-2 border-t border-slate-100 pt-4"></div>
+            <div class="md:hidden flex items-center">
+                <button onclick="toggleMobileMenu()" class="bg-slate-200 text-slate-700 w-12 h-12 rounded-xl border-b-4 border-slate-300 active:border-b-0 active:translate-y-[4px] flex items-center justify-center transition-all"><i id="mobile-icon" class="fa-solid fa-bars text-xl"></i></button>
             </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden mt-2 pt-4 border-t-2 border-slate-100 flex flex-col space-y-2 font-bold text-slate-600 pb-4 px-6 bg-white rounded-b-3xl">
+            <a href="shop.html?category=All" class="bg-slate-50 px-4 py-3 rounded-xl border-2 border-slate-100">All Products</a>
+            <a href="#offers" class="bg-slate-50 px-4 py-3 rounded-xl border-2 border-slate-100">Offers</a>
+            <div id="mobile-auth-container" class="mt-4 border-t-2 border-slate-100 pt-4"></div>
         </div>
     </nav>
 
-    <div id="auth-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border border-slate-200 m-4">
+    <div id="auth-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm">
+        <div data-aos="zoom-out-up" class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border-4 border-slate-100 border-b-[12px] border-b-slate-200 m-4 relative">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-extrabold text-slate-900" id="auth-title">Welcome Back</h2>
-                <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <h2 class="text-3xl font-extrabold text-slate-900" id="auth-title">Welcome</h2>
+                <button onclick="toggleAuthModal()" class="w-10 h-10 bg-slate-100 rounded-xl text-slate-500 border-b-4 border-slate-300 active:border-b-0 active:translate-y-1 transition-all"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             
             <div id="auth-forms-container">
-                <div class="flex bg-slate-100 p-1 rounded-xl mb-6">
-                    <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 py-2 text-sm font-bold bg-white rounded-lg shadow-sm text-teal-600 transition-all">Sign In</button>
-                    <button onclick="switchAuthTab('signup')" id="tab-signup" class="flex-1 py-2 text-sm font-bold text-slate-500 hover:text-teal-600 transition-all">Register</button>
+                <div class="flex bg-slate-100 p-2 rounded-2xl mb-8 shadow-inner">
+                    <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 py-3 text-sm font-extrabold bg-white rounded-xl shadow-[0_4px_0_0_#cbd5e1] text-teal-600 transition-all">Sign In</button>
+                    <button onclick="switchAuthTab('signup')" id="tab-signup" class="flex-1 py-3 text-sm font-bold text-slate-500 hover:text-teal-600 transition-all">Register</button>
                 </div>
 
-                <form id="login-form" onsubmit="processAuth(event, 'login')" class="space-y-4">
-                    <input type="text" id="auth-phone" class="w-full px-4 py-3 rounded-xl border outline-none focus:border-teal-500 transition" placeholder="Phone Number or 'admin'" required>
-                    <input type="password" id="auth-pass" class="w-full px-4 py-3 rounded-xl border outline-none focus:border-teal-500 transition" placeholder="Password" required>
-                    <button type="submit" class="w-full bg-slate-900 hover:bg-teal-600 text-white font-bold py-3 rounded-xl mt-4 shadow-lg transition">Login securely <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                <form id="login-form" onsubmit="processAuth(event, 'login')" class="space-y-5">
+                    <input type="text" id="auth-phone" class="w-full px-5 py-4 bg-slate-50 rounded-2xl border-2 border-slate-200 shadow-inner outline-none focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-100 font-bold transition-all" placeholder="Phone Number" required>
+                    <input type="password" id="auth-pass" class="w-full px-5 py-4 bg-slate-50 rounded-2xl border-2 border-slate-200 shadow-inner outline-none focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-100 font-bold transition-all" placeholder="Password" required>
+                    <button type="submit" class="w-full bg-teal-500 text-white font-extrabold text-lg py-4 rounded-2xl border-b-[6px] border-teal-700 hover:bg-teal-400 active:border-b-[0px] active:translate-y-[6px] transition-all mt-4">Login Securely</button>
                 </form>
 
-                <form id="signup-form" onsubmit="processAuth(event, 'signup')" class="space-y-4 hidden">
-                    <input type="text" id="reg-name" class="w-full px-4 py-3 rounded-xl border outline-none focus:border-teal-500 transition" placeholder="Full Name" required>
-                    <input type="tel" id="reg-phone" class="w-full px-4 py-3 rounded-xl border outline-none focus:border-teal-500 transition" placeholder="Mobile Number" required>
-                    <input type="password" id="reg-pass" class="w-full px-4 py-3 rounded-xl border outline-none focus:border-teal-500 transition" placeholder="Create Password" required>
-                    <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl mt-4 shadow-lg transition">Create Account</button>
+                <form id="signup-form" onsubmit="processAuth(event, 'signup')" class="space-y-5 hidden">
+                    <input type="text" id="reg-name" class="w-full px-5 py-4 bg-slate-50 rounded-2xl border-2 border-slate-200 shadow-inner outline-none focus:bg-white focus:border-teal-500 font-bold transition-all" placeholder="Full Name" required>
+                    <input type="tel" id="reg-phone" class="w-full px-5 py-4 bg-slate-50 rounded-2xl border-2 border-slate-200 shadow-inner outline-none focus:bg-white focus:border-teal-500 font-bold transition-all" placeholder="Mobile Number" required>
+                    <input type="password" id="reg-pass" class="w-full px-5 py-4 bg-slate-50 rounded-2xl border-2 border-slate-200 shadow-inner outline-none focus:bg-white focus:border-teal-500 font-bold transition-all" placeholder="Create Password" required>
+                    <button type="submit" class="w-full bg-slate-900 text-white font-extrabold text-lg py-4 rounded-2xl border-b-[6px] border-slate-700 hover:bg-slate-800 active:border-b-[0px] active:translate-y-[6px] transition-all mt-4">Create Account</button>
                 </form>
             </div>
 
-            <div id="otp-container" class="hidden text-center space-y-4">
-                <div class="bg-teal-50 text-teal-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
-                    <i class="fa-solid fa-message-sms text-2xl"></i>
+            <div id="otp-container" class="hidden text-center space-y-6">
+                <div class="bg-teal-100 text-teal-600 w-24 h-24 rounded-[2rem] flex items-center justify-center mx-auto mb-4 border-b-8 border-teal-200 transform rotate-12 shadow-sm">
+                    <i class="fa-solid fa-message-sms text-4xl transform -rotate-12"></i>
                 </div>
-                <h3 class="font-bold text-lg text-slate-800">Verify your Phone</h3>
-                <p class="text-sm text-slate-500 mb-4">We've sent a 4-digit code to your number.</p>
+                <h3 class="font-extrabold text-2xl text-slate-800">Verify Phone</h3>
                 <form onsubmit="verifyOTP(event)">
-                    <input type="text" id="otp-input" maxlength="4" class="w-full px-4 py-3 rounded-xl border text-center text-2xl tracking-[0.5em] font-bold outline-none focus:border-teal-500 transition" placeholder="••••" required>
-                    <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl mt-4 shadow-lg transition">Verify OTP</button>
+                    <input type="text" id="otp-input" maxlength="4" class="w-full px-4 py-4 bg-slate-100 rounded-2xl border-2 border-slate-200 shadow-inner text-center text-4xl tracking-[1em] font-black outline-none focus:bg-white focus:border-teal-500 transition-all mb-6" placeholder="••••" required>
+                    <button type="submit" class="w-full bg-teal-500 text-white font-extrabold text-lg py-4 rounded-2xl border-b-[6px] border-teal-700 hover:bg-teal-400 active:border-b-[0px] active:translate-y-[6px] transition-all">Verify OTP</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <div id="client-settings-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border border-slate-200 m-4">
+    <div id="client-settings-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border-4 border-slate-100 border-b-[12px] border-b-slate-200 m-4">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-extrabold text-slate-900"><i class="fa-solid fa-gear text-teal-500 mr-2"></i> My Settings</h2>
-                <button onclick="document.getElementById('client-settings-modal').classList.add('hidden'); document.getElementById('client-settings-modal').classList.remove('flex');" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <h2 class="text-2xl font-extrabold flex items-center gap-3"><div class="p-2 bg-slate-100 rounded-xl shadow-inner"><i class="fa-solid fa-gear text-teal-500"></i></div> Settings</h2>
+                <button onclick="document.getElementById('client-settings-modal').classList.add('hidden'); document.getElementById('client-settings-modal').classList.remove('flex');" class="w-10 h-10 bg-slate-100 rounded-xl text-slate-500 border-b-4 border-slate-300 active:border-b-0 active:translate-y-1 transition-all"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
             <form onsubmit="saveClientSettings(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Full Name</label>
-                    <input type="text" id="set-name" class="w-full px-4 py-3 rounded-xl border outline-none focus:border-teal-500 transition" required>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Phone Number</label>
-                    <input type="text" id="set-phone" class="w-full px-4 py-3 rounded-xl border outline-none text-slate-400 bg-slate-50 cursor-not-allowed" readonly title="Phone number cannot be changed">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Default Delivery Address</label>
-                    <textarea id="set-address" rows="3" class="w-full px-4 py-3 rounded-xl border outline-none focus:border-teal-500 transition" placeholder="E.g., Flat 402, Bheemanna Garden..."></textarea>
-                </div>
-                <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl mt-4 shadow-lg transition">Save Profile</button>
+                <input type="text" id="set-name" class="w-full px-5 py-4 bg-slate-50 rounded-2xl border-2 border-slate-200 shadow-inner outline-none focus:bg-white font-bold" required placeholder="Full Name">
+                <input type="text" id="set-phone" class="w-full px-5 py-4 bg-slate-200 rounded-2xl border-2 border-slate-300 shadow-inner outline-none text-slate-500 font-bold cursor-not-allowed" readonly title="Phone cannot be changed">
+                <textarea id="set-address" rows="3" class="w-full px-5 py-4 bg-slate-50 rounded-2xl border-2 border-slate-200 shadow-inner outline-none focus:bg-white font-bold" placeholder="Default Delivery Address"></textarea>
+                <button type="submit" class="w-full bg-teal-500 text-white font-extrabold text-lg py-4 rounded-2xl border-b-[6px] border-teal-700 active:border-b-[0px] active:translate-y-[6px] transition-all mt-4">Save Profile</button>
             </form>
         </div>
     </div>
 
-    <header class="pt-40 pb-20 lg:pt-48 lg:pb-32 relative text-center">
+    <header class="pt-48 pb-20 lg:pt-56 lg:pb-32 text-center relative z-10 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4">
-            <div class="inline-block mb-4 px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-teal-700 text-sm font-semibold tracking-wide shadow-sm">
-                <i class="fa-solid fa-bolt text-amber-500 mr-1"></i> Open till 12 AM Every Day
+            <div data-aos="zoom-in" class="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-2xl bg-white border-2 border-slate-100 shadow-[0_6px_0_0_#e2e8f0] text-slate-700 font-bold tracking-wide">
+                <div class="w-3 h-3 bg-amber-500 rounded-full animate-pulse shadow-[0_0_10px_#f59e0b]"></div> Open till Midnight
             </div>
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 mb-6 leading-tight">
+            <h1 data-aos="fade-up" data-aos-delay="100" class="text-6xl md:text-8xl font-black tracking-tight text-slate-900 mb-8 leading-[1.1] drop-shadow-sm">
                 Fresh Groceries, <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-emerald-400">Delivered Fast.</span>
+                <span class="text-teal-500 inline-block transform hover:rotate-2 hover:scale-105 transition-transform duration-300">Delivered Fast.</span>
             </h1>
-            <p class="text-xl text-slate-600 mb-10 max-w-2xl mx-auto">Experience the future of local shopping in Shanti Nagar. Premium variety, instant WhatsApp ordering, and lightning-fast pickups.</p>
             
-            <div class="flex flex-col sm:flex-row justify-center gap-6">
-                <a href="shop.html?category=All" class="group relative bg-green-500 text-white font-bold py-4 px-8 rounded-2xl shadow-[0_0_20px_rgba(34,197,94,0.4)] hover:shadow-[0_0_30px_rgba(34,197,94,0.6)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-                    <div class="absolute inset-0 bg-white/20 group-hover:translate-x-full transition-transform duration-500 -translate-x-full skew-x-12"></div>
-                    <span class="relative flex items-center justify-center gap-2 text-lg">
-                        <i class="fa-solid fa-basket-shopping text-xl group-hover:scale-110 transition-transform"></i> Start Shopping
-                    </span>
+            <div data-aos="fade-up" data-aos-delay="200" class="flex flex-col sm:flex-row justify-center gap-6 mt-10">
+                <a href="shop.html?category=All" class="bg-teal-500 text-white font-extrabold text-xl py-5 px-10 rounded-[2rem] border-b-[8px] border-teal-700 hover:bg-teal-400 active:border-b-[0px] active:translate-y-[8px] transition-all shadow-xl flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-basket-shopping text-2xl"></i> Start Shopping
                 </a>
-                <a href="#categories" class="bg-white text-slate-800 font-bold py-4 px-8 rounded-2xl shadow-lg border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 text-lg">
-                    Explore Categories <i class="fa-solid fa-arrow-down animate-bounce text-teal-500"></i>
+                <a href="#categories" class="bg-white text-slate-800 font-extrabold text-xl py-5 px-10 rounded-[2rem] border-2 border-slate-200 border-b-[8px] active:border-b-[2px] active:translate-y-[6px] transition-all shadow-sm flex items-center justify-center gap-3">
+                    Explore <i class="fa-solid fa-arrow-down text-teal-500"></i>
                 </a>
             </div>
         </div>
     </header>
 
-    <section id="categories" class="py-20 bg-white/50 backdrop-blur-sm relative z-10 border-t border-white">
+    <section id="categories" class="py-24 bg-white relative z-10 rounded-t-[3rem] shadow-[0_-20px_50px_-15px_rgba(0,0,0,0.05)] border-t-8 border-slate-100">
         <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-4xl font-extrabold text-center mb-16 text-slate-900">Shop By Category</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                
-                <a href="shop.html?category=Fresh Veggies" class="group relative overflow-hidden bg-white rounded-3xl p-8 shadow-sm hover:shadow-[0_10px_40px_rgba(20,184,166,0.15)] transition-all duration-300 hover:-translate-y-2 border border-slate-100 flex flex-col items-center justify-center text-center">
-                    <div class="absolute inset-0 bg-gradient-to-br from-teal-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="w-20 h-20 rounded-2xl bg-green-50 flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors duration-300">
-                        <i class="fa-solid fa-carrot text-4xl text-green-500 transform group-hover:scale-125 group-hover:rotate-12 transition-all duration-300 relative z-10"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-lg relative z-10">Fresh Veggies</h3>
-                    <div class="mt-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 text-teal-600 text-sm font-semibold">Shop Now →</div>
-                </a>
-
-                <a href="shop.html?category=Fruits" class="group relative overflow-hidden bg-white rounded-3xl p-8 shadow-sm hover:shadow-[0_10px_40px_rgba(239,68,68,0.15)] transition-all duration-300 hover:-translate-y-2 border border-slate-100 flex flex-col items-center justify-center text-center">
-                    <div class="absolute inset-0 bg-gradient-to-br from-red-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="w-20 h-20 rounded-2xl bg-red-50 flex items-center justify-center mb-4 group-hover:bg-red-100 transition-colors duration-300">
-                        <i class="fa-solid fa-apple-whole text-4xl text-red-500 transform group-hover:scale-125 group-hover:-rotate-12 transition-all duration-300 relative z-10"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-lg relative z-10">Fresh Fruits</h3>
-                    <div class="mt-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 text-red-500 text-sm font-semibold">Shop Now →</div>
-                </a>
-
-                <a href="shop.html?category=Dairy %26 Oil" class="group relative overflow-hidden bg-white rounded-3xl p-8 shadow-sm hover:shadow-[0_10px_40px_rgba(234,179,8,0.15)] transition-all duration-300 hover:-translate-y-2 border border-slate-100 flex flex-col items-center justify-center text-center">
-                    <div class="absolute inset-0 bg-gradient-to-br from-yellow-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="w-20 h-20 rounded-2xl bg-yellow-50 flex items-center justify-center mb-4 group-hover:bg-yellow-100 transition-colors duration-300">
-                        <i class="fa-solid fa-bottle-droplet text-4xl text-yellow-500 transform group-hover:scale-125 transition-all duration-300 relative z-10"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-lg relative z-10">Dairy & Oil</h3>
-                    <div class="mt-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 text-yellow-600 text-sm font-semibold">Shop Now →</div>
-                </a>
-
-                <a href="shop.html?category=Staples" class="group relative overflow-hidden bg-white rounded-3xl p-8 shadow-sm hover:shadow-[0_10px_40px_rgba(249,115,22,0.15)] transition-all duration-300 hover:-translate-y-2 border border-slate-100 flex flex-col items-center justify-center text-center">
-                    <div class="absolute inset-0 bg-gradient-to-br from-orange-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="w-20 h-20 rounded-2xl bg-orange-50 flex items-center justify-center mb-4 group-hover:bg-orange-100 transition-colors duration-300">
-                        <i class="fa-solid fa-bowl-rice text-4xl text-orange-500 transform group-hover:scale-125 transition-all duration-300 relative z-10"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-lg relative z-10">Rice & Dals</h3>
-                    <div class="mt-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 text-orange-600 text-sm font-semibold">Shop Now →</div>
-                </a>
-
-                <a href="shop.html?category=Household" class="col-span-2 md:col-span-1 group relative overflow-hidden bg-white rounded-3xl p-8 shadow-sm hover:shadow-[0_10px_40px_rgba(59,130,246,0.15)] transition-all duration-300 hover:-translate-y-2 border border-slate-100 flex flex-col items-center justify-center text-center">
-                    <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors duration-300">
-                        <i class="fa-solid fa-soap text-4xl text-blue-500 transform group-hover:scale-125 group-hover:-rotate-12 transition-all duration-300 relative z-10"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-lg relative z-10">Household</h3>
-                    <div class="mt-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 text-blue-600 text-sm font-semibold">Shop Now →</div>
-                </a>
-
-            </div>
-        </div>
-    </section>
-
-    <section id="offers" class="py-20 bg-slate-900 text-white relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-full h-full opacity-20 pointer-events-none" style="background-image: radial-gradient(circle at top right, #14b8a6, transparent 40%);"></div>
-        <div class="max-w-7xl mx-auto px-4 relative z-10">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
-                <div>
-                    <h2 class="text-4xl font-extrabold mb-2">Flash Deals</h2>
-                    <p class="text-slate-400">Premium quality at unbeatable prices.</p>
-                </div>
-            </div>
+            <h2 data-aos="fade-right" class="text-5xl font-black mb-16 text-slate-900 drop-shadow-sm">Aisles <span class="text-slate-400">& Categories</span></h2>
             
-            <div id="live-offers-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                </div>
-        </div>
-    </section>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 lg:gap-8">
+                <a href="shop.html?category=Fresh Veggies" data-aos="fade-up" data-aos-delay="100" class="tilt-card bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 shadow-[0_12px_0_0_#cbd5e1] hover:shadow-[0_20px_0_0_#94a3b8] hover:-translate-y-3 transition-all flex flex-col items-center">
+                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)">
+                        <i class="fa-solid fa-carrot text-5xl text-green-500"></i>
+                    </div>
+                    <h3 class="font-extrabold text-xl text-slate-800" style="transform: translateZ(20px)">Veggies</h3>
+                </a>
 
-    <section id="services" class="py-20 bg-slate-50 relative z-10">
-        <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-4xl font-extrabold text-center mb-16 text-slate-900">How We Serve You</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="group bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 hover:-translate-y-2">
-                    <div class="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-teal-500 transition-colors duration-500">
-                        <i class="fa-solid fa-truck-fast text-2xl text-teal-600 group-hover:text-white group-hover:translate-x-2 transition-all"></i>
+                <a href="shop.html?category=Fruits" data-aos="fade-up" data-aos-delay="200" class="tilt-card bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 shadow-[0_12px_0_0_#cbd5e1] hover:shadow-[0_20px_0_0_#94a3b8] hover:-translate-y-3 transition-all flex flex-col items-center">
+                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)">
+                        <i class="fa-solid fa-apple-whole text-5xl text-red-500"></i>
                     </div>
-                    <h3 class="font-bold text-xl text-slate-800 mb-2">Swift Delivery</h3>
-                    <p class="text-slate-500 text-sm">Real-time tracking for your doorstep deliveries.</p>
-                </div>
-                
-                <div class="group bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 hover:-translate-y-2">
-                    <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-500 transition-colors duration-500">
-                        <i class="fa-solid fa-bag-shopping text-2xl text-blue-600 group-hover:text-white group-hover:-translate-y-2 transition-all"></i>
-                    </div>
-                    <h3 class="font-bold text-xl text-slate-800 mb-2">Smart Pick-up</h3>
-                    <p class="text-slate-500 text-sm">Order online, scan your QR code, and grab your bags.</p>
-                </div>
+                    <h3 class="font-extrabold text-xl text-slate-800" style="transform: translateZ(20px)">Fruits</h3>
+                </a>
 
-                <div class="group bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 hover:-translate-y-2">
-                    <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-purple-500 transition-colors duration-500">
-                        <i class="fa-brands fa-nfc-symbol text-2xl text-purple-600 group-hover:text-white group-hover:scale-110 transition-all"></i>
+                <a href="shop.html?category=Dairy %26 Oil" data-aos="fade-up" data-aos-delay="300" class="tilt-card bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 shadow-[0_12px_0_0_#cbd5e1] hover:shadow-[0_20px_0_0_#94a3b8] hover:-translate-y-3 transition-all flex flex-col items-center">
+                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)">
+                        <i class="fa-solid fa-bottle-droplet text-5xl text-yellow-500"></i>
                     </div>
-                    <h3 class="font-bold text-xl text-slate-800 mb-2">Tap & Pay</h3>
-                    <p class="text-slate-500 text-sm">Seamless checkout with NFC and mobile wallets.</p>
-                </div>
+                    <h3 class="font-extrabold text-xl text-slate-800" style="transform: translateZ(20px)">Dairy & Oil</h3>
+                </a>
 
-                <div class="group bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 hover:-translate-y-2">
-                    <div class="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-amber-500 transition-colors duration-500">
-                        <i class="fa-regular fa-clock text-2xl text-amber-600 group-hover:text-white group-hover:rotate-180 transition-all duration-700"></i>
+                <a href="shop.html?category=Staples" data-aos="fade-up" data-aos-delay="400" class="tilt-card bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 shadow-[0_12px_0_0_#cbd5e1] hover:shadow-[0_20px_0_0_#94a3b8] hover:-translate-y-3 transition-all flex flex-col items-center">
+                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)">
+                        <i class="fa-solid fa-bowl-rice text-5xl text-orange-500"></i>
                     </div>
-                    <h3 class="font-bold text-xl text-slate-800 mb-2">Extended Hours</h3>
-                    <p class="text-slate-500 text-sm">Shop at your convenience until 12 AM.</p>
-                </div>
+                    <h3 class="font-extrabold text-xl text-slate-800" style="transform: translateZ(20px)">Staples</h3>
+                </a>
+
+                <a href="shop.html?category=Household" data-aos="fade-up" data-aos-delay="500" class="tilt-card col-span-2 md:col-span-1 bg-slate-50 rounded-[2rem] p-8 border-2 border-slate-200 shadow-[0_12px_0_0_#cbd5e1] hover:shadow-[0_20px_0_0_#94a3b8] hover:-translate-y-3 transition-all flex flex-col items-center">
+                    <div class="w-24 h-24 rounded-[2rem] bg-white shadow-inner flex items-center justify-center mb-6 transform transition-transform" style="transform: translateZ(30px)">
+                        <i class="fa-solid fa-soap text-5xl text-blue-500"></i>
+                    </div>
+                    <h3 class="font-extrabold text-xl text-slate-800" style="transform: translateZ(20px)">Household</h3>
+                </a>
             </div>
         </div>
     </section>
 
-    <section class="py-20 bg-white border-t border-slate-100">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-16">
-                <div class="inline-flex items-center gap-2 text-yellow-500 font-bold text-xl bg-yellow-50 px-6 py-2 rounded-full border border-yellow-200 mb-4">
-                    <span>4.1</span>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star-half-stroke"></i>
-                </div>
-                <h2 class="text-4xl font-extrabold text-slate-900">Community Verified</h2>
-                <p class="text-slate-500 mt-2">Based on 407 reviews from Shanti Nagar locals</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-slate-50 p-8 rounded-3xl shadow-sm relative hover:shadow-md transition duration-300">
-                    <i class="fa-solid fa-quote-left text-4xl text-teal-100 absolute top-6 left-6"></i>
-                    <div class="relative z-10 pt-4">
-                        <p class="text-slate-700 italic mb-6">"The variety is fantastic. You can find almost any grocery item you need here. The fresh veggies section is my favorite."</p>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center text-white font-bold">L</div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-900">Local Guide</p>
-                                <div class="flex text-yellow-400 text-xs"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-slate-50 p-8 rounded-3xl shadow-sm relative hover:shadow-md transition duration-300">
-                    <i class="fa-solid fa-quote-left text-4xl text-teal-100 absolute top-6 left-6"></i>
-                    <div class="relative z-10 pt-4">
-                        <p class="text-slate-700 italic mb-6">"Very good variety. It can be a bit expensive for certain premium items, but the convenience of them being open till midnight is unbeatable."</p>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">V</div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-900">Verified Customer</p>
-                                <div class="flex text-yellow-400 text-xs"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-slate-50 p-8 rounded-3xl shadow-sm relative hover:shadow-md transition duration-300">
-                    <i class="fa-solid fa-quote-left text-4xl text-teal-100 absolute top-6 left-6"></i>
-                    <div class="relative z-10 pt-4">
-                        <p class="text-slate-700 italic mb-6">"Great daily discounts if you know when to look. The staff is helpful and ordering via WhatsApp for delivery is super smooth."</p>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold">S</div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-900">Shanti Nagar Resident</p>
-                                <div class="flex text-yellow-400 text-xs"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <section id="offers" class="py-24 bg-slate-900 border-t-[16px] border-slate-800 rounded-t-[3rem] -mt-10 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 relative">
+            <h2 data-aos="fade-right" class="text-5xl font-black mb-12 text-white drop-shadow-md">Flash Deals <i class="fa-solid fa-bolt text-amber-400"></i></h2>
+            <div id="live-offers-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
-
-    <footer id="location" class="bg-slate-900 pt-20 pb-10 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
-            <div>
-                <div class="flex items-center gap-2 mb-6">
-                    <div class="bg-gradient-to-br from-teal-400 to-emerald-600 p-2 rounded-lg text-white">
-                        <i class="fa-solid fa-leaf"></i>
-                    </div>
-                    <span class="font-bold text-2xl text-white">Sapna Needs</span>
-                </div>
-                <p class="text-slate-400 leading-relaxed">Redefining the local grocery experience in Shanti Nagar with premium quality and unmatched convenience.</p>
-            </div>
-            
-            <div>
-                <h3 class="text-white font-bold text-lg mb-6">Visit Us</h3>
-                <p class="text-slate-400 mb-2"><i class="fa-solid fa-location-dot text-teal-500 mr-2"></i> 34, 5th Cross Rd, Bangiyappa Garden</p>
-                <p class="text-slate-400 mb-4 ml-6">Shanti Nagar, Bengaluru 560027</p>
-                <p class="text-teal-400 font-medium mb-2"><i class="fa-regular fa-clock mr-2"></i> Open Today • Closes 12 AM</p>
-                <p class="text-slate-400"><i class="fa-solid fa-phone text-teal-500 mr-2"></i> 088845 90962</p>
-                <a href ="https://maps.app.goo.gl/Hk4Be8N4uqh8gNJx6" target="_blank" class="text-teal-500 hover:text-teal-400 mt-2 inline-block"><i class="fa-solid fa-map-location-dot mr-2"></i> Directions</a>
-            </div>
-
-            <div>
-                <h3 class="text-white font-bold text-lg mb-6">Live Status</h3>
-                <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700 backdrop-blur-sm">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-slate-400 text-sm">Current Shoppers</span>
-                        <span class="relative flex h-3 w-3">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                        </span>
-                    </div>
-                    <p class="text-4xl font-extrabold text-white" id="live-visitors">14</p>
-                </div>
-            </div>
-        </div>
-        <div class="max-w-7xl mx-auto px-4 border-t border-slate-800/50 pt-8 flex flex-col md:flex-row justify-between items-center text-slate-500 text-sm">
-            <p>© 2026 Sapna Home Needs. All rights reserved.</p>
-            <div class="flex gap-4 mt-4 md:mt-0 text-xl">
-                <i class="fa-brands fa-google-pay hover:text-white transition-colors cursor-pointer"></i>
-                <i class="fa-brands fa-cc-visa hover:text-white transition-colors cursor-pointer"></i>
-                <i class="fa-brands fa-whatsapp hover:text-green-500 transition-colors cursor-pointer"></i>
-            </div>
-        </div>
-    </footer>
 
     <script src="app.js"></script>
-
     <script>
-        // 1. Live Visitor Counter
+        // Initialize 3D Animations
         document.addEventListener('DOMContentLoaded', () => {
-            const visitorEl = document.getElementById('live-visitors');
-            if (visitorEl) {
-                setInterval(() => {
-                    let current = parseInt(visitorEl.innerText, 10);
-                    let change = Math.floor(Math.random() * 5) - 2; 
-                    let nextValue = current + change;
-                    if (nextValue < 5) nextValue = 5;
-                    if (nextValue > 35) nextValue = 35;
-                    visitorEl.innerText = nextValue;
-                }, 4000); 
-            }
-            // Trigger check to set navbar initially
+            AOS.init({ duration: 800, once: true, offset: 50 });
+            VanillaTilt.init(document.querySelectorAll(".tilt-card"), { max: 15, speed: 400, glare: true, "max-glare": 0.15, perspective: 1000 });
             checkLoginStatus();
         });
 
-        // 2. Mobile Menu Logic
+        // Modals & Menu Logic
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
             const icon = document.getElementById('mobile-icon');
-            if (menu.classList.contains('hidden')) { 
-                menu.classList.remove('hidden'); 
-                icon.classList.replace('fa-bars', 'fa-xmark'); 
-            } else { 
-                menu.classList.add('hidden'); 
-                icon.classList.replace('fa-xmark', 'fa-bars'); 
-            }
+            if (menu.classList.contains('hidden')) { menu.classList.remove('hidden'); icon.classList.replace('fa-bars', 'fa-xmark'); } 
+            else { menu.classList.add('hidden'); icon.classList.replace('fa-xmark', 'fa-bars'); }
         }
 
-        // 3. Auth Modal Logic
         function toggleAuthModal() {
             const modal = document.getElementById('auth-modal');
             if (modal.classList.contains('hidden')) {
-                modal.classList.remove('hidden'); 
-                modal.classList.add('flex');
-                // Close mobile menu if open to avoid overlap
+                modal.classList.remove('hidden'); modal.classList.add('flex');
                 document.getElementById('mobile-menu').classList.add('hidden');
                 document.getElementById('mobile-icon').classList.replace('fa-xmark', 'fa-bars');
-            } else { 
-                modal.classList.add('hidden'); 
-                modal.classList.remove('flex'); 
-            }
+            } else { modal.classList.add('hidden'); modal.classList.remove('flex'); }
         }
 
-        // 4. Switch between Login/Signup Tabs
         function switchAuthTab(tab) {
+            const loginBtn = document.getElementById('tab-login');
+            const signupBtn = document.getElementById('tab-signup');
             if(tab === 'login') {
-                document.getElementById('login-form').classList.remove('hidden'); 
-                document.getElementById('signup-form').classList.add('hidden');
-                document.getElementById('tab-login').className = "flex-1 py-2 text-sm font-bold bg-white rounded-lg shadow-sm text-teal-600 transition-all";
-                document.getElementById('tab-signup').className = "flex-1 py-2 text-sm font-bold text-slate-500 hover:text-teal-600 transition-all";
+                document.getElementById('login-form').classList.remove('hidden'); document.getElementById('signup-form').classList.add('hidden');
+                loginBtn.className = "flex-1 py-3 text-sm font-extrabold bg-white rounded-xl shadow-[0_4px_0_0_#cbd5e1] text-teal-600 transition-all";
+                signupBtn.className = "flex-1 py-3 text-sm font-bold text-slate-500 hover:text-teal-600 transition-all";
                 document.getElementById('auth-title').innerText = "Welcome Back";
             } else {
-                document.getElementById('login-form').classList.add('hidden'); 
-                document.getElementById('signup-form').classList.remove('hidden');
-                document.getElementById('tab-signup').className = "flex-1 py-2 text-sm font-bold bg-white rounded-lg shadow-sm text-teal-600 transition-all";
-                document.getElementById('tab-login').className = "flex-1 py-2 text-sm font-bold text-slate-500 hover:text-teal-600 transition-all";
+                document.getElementById('login-form').classList.add('hidden'); document.getElementById('signup-form').classList.remove('hidden');
+                signupBtn.className = "flex-1 py-3 text-sm font-extrabold bg-white rounded-xl shadow-[0_4px_0_0_#cbd5e1] text-teal-600 transition-all";
+                loginBtn.className = "flex-1 py-3 text-sm font-bold text-slate-500 hover:text-teal-600 transition-all";
                 document.getElementById('auth-title').innerText = "Create Account";
             }
         }
 
-        // 5. Dynamic Navbar based on Login Status
+        // 3D Auth Button Logic
         function checkLoginStatus() {
             const clientData = JSON.parse(localStorage.getItem('sapna_client_user'));
             const desktopAuth = document.getElementById('desktop-auth-container');
             const mobileAuth = document.getElementById('mobile-auth-container');
 
             if (clientData) {
-                // Logged In Status
                 desktopAuth.innerHTML = `
                     <div class="relative group cursor-pointer z-50">
-                        <div class="flex items-center gap-2 text-teal-600 font-bold bg-teal-50 px-4 py-2 rounded-xl border border-teal-100 hover:bg-teal-100 transition">
-                            <i class="fa-solid fa-circle-user"></i> ${clientData.name.split(' ')[0]} <i class="fa-solid fa-chevron-down text-xs ml-1"></i>
+                        <div class="flex items-center gap-3 text-teal-700 font-extrabold bg-white px-5 py-3 rounded-xl border-2 border-slate-200 shadow-[0_4px_0_0_#e2e8f0] hover:translate-y-1 hover:shadow-none transition-all">
+                            <i class="fa-solid fa-circle-user text-xl text-teal-500"></i> ${clientData.name.split(' ')[0]} <i class="fa-solid fa-chevron-down text-xs ml-1 text-slate-400"></i>
                         </div>
-                        <div class="absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
-                            <button onclick="openClientSettings()" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-slate-700 font-medium transition"><i class="fa-solid fa-gear w-5 text-teal-500"></i> Settings</button>
-                            <button onclick="logoutUser()" class="w-full text-left px-4 py-3 hover:bg-red-50 text-red-500 font-medium border-t border-slate-100 transition"><i class="fa-solid fa-arrow-right-from-bracket w-5"></i> Logout</button>
+                        <div class="absolute right-0 mt-3 w-56 bg-white border-2 border-slate-200 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
+                            <button onclick="openClientSettings()" class="w-full text-left px-5 py-4 hover:bg-slate-50 text-slate-700 font-bold border-b-2 border-slate-100"><i class="fa-solid fa-gear w-6 text-teal-500"></i> Settings</button>
+                            <button onclick="logoutUser()" class="w-full text-left px-5 py-4 hover:bg-red-50 text-red-500 font-bold"><i class="fa-solid fa-arrow-right-from-bracket w-6"></i> Logout</button>
                         </div>
                     </div>`;
-                mobileAuth.innerHTML = `
-                    <button onclick="openClientSettings()" class="w-full bg-slate-100 px-5 py-3 rounded-xl font-bold mb-2 text-slate-700 hover:bg-slate-200 transition">My Settings</button>
-                    <button onclick="logoutUser()" class="w-full bg-red-50 text-red-500 border border-red-100 px-5 py-3 rounded-xl font-bold hover:bg-red-100 transition">Logout</button>
-                `;
+                mobileAuth.innerHTML = `<button onclick="openClientSettings()" class="w-full bg-white border-2 border-slate-200 shadow-[0_4px_0_0_#e2e8f0] px-5 py-3 rounded-xl font-bold mb-3 text-slate-700 active:translate-y-1 active:shadow-none transition-all">My Settings</button><button onclick="logoutUser()" class="w-full bg-red-50 text-red-500 border-2 border-red-200 shadow-[0_4px_0_0_#fecaca] px-5 py-3 rounded-xl font-bold active:translate-y-1 active:shadow-none transition-all">Logout</button>`;
             } else {
-                // Logged Out Status
-                desktopAuth.innerHTML = `<button onclick="toggleAuthModal()" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl shadow-lg hover:shadow-slate-500/30 hover:-translate-y-0.5 transition-all duration-300 text-sm font-bold">Login / Sign Up</button>`;
-                mobileAuth.innerHTML = `<button onclick="toggleAuthModal()" class="w-full bg-slate-900 text-white px-5 py-3 rounded-xl shadow-lg text-center font-bold">Login / Sign Up</button>`;
+                desktopAuth.innerHTML = `<button onclick="toggleAuthModal()" class="bg-slate-900 text-white px-6 py-3 rounded-2xl border-b-[4px] border-slate-700 hover:bg-slate-800 active:border-b-[0px] active:translate-y-[4px] transition-all font-extrabold tracking-wide">Login / Sign Up</button>`;
+                mobileAuth.innerHTML = `<button onclick="toggleAuthModal()" class="w-full bg-slate-900 text-white px-6 py-4 rounded-2xl border-b-[4px] border-slate-700 active:border-b-[0px] active:translate-y-[4px] transition-all font-extrabold text-center">Login / Sign Up</button>`;
             }
         }
     </script>
