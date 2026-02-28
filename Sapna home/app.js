@@ -1,13 +1,8 @@
-// app.js - 3D Global Engine for Sapna Home Needs
+// app.js - 3D Global Engine for Sapna Home Needs (Updated with Units)
 
 // Safely load cart from memory
 let cart = [];
-try { 
-    cart = JSON.parse(localStorage.getItem('sapna_cart')) || []; 
-} catch (e) { 
-    cart = []; 
-}
-
+try { cart = JSON.parse(localStorage.getItem('sapna_cart')) || []; } catch (e) { cart = []; }
 let pendingOTP = null;
 let pendingUserData = null;
 let authAction = null; 
@@ -21,11 +16,12 @@ function initializeData() {
         localStorage.setItem('sapna_users', JSON.stringify([]));
     }
     if(!localStorage.getItem('sapna_inventory')) {
+        // Added the new "unit" property to default products
         const initialInventory = [
-            {id: 1, name: "Aashirvaad Atta (10kg)", cat: "Staples", price: 450, stock: 12, imgUrl: "https://m.media-amazon.com/images/I/910XEqyDcwL._AC_UF1000,1000_QL80_.jpg"},
-            {id: 2, name: "Sunflower Oil (1L)", cat: "Dairy & Oil", price: 135, stock: 45, imgUrl: "https://m.media-amazon.com/images/I/51rYqE7aB7L._AC_UF1000,1000_QL80_.jpg"},
-            {id: 3, name: "Fresh Tomatoes", cat: "Fresh Veggies", price: 40, stock: 50, imgUrl: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&q=80"},
-            {id: 4, name: "Washing Powder (1kg)", cat: "Household", price: 120, stock: 8, imgUrl: "https://m.media-amazon.com/images/I/61NlPjT0-2L._AC_UF1000,1000_QL80_.jpg"}
+            {id: 1, name: "Aashirvaad Atta", unit: "10kg", cat: "Staples", price: 450, stock: 12, imgUrl: "https://m.media-amazon.com/images/I/910XEqyDcwL._AC_UF1000,1000_QL80_.jpg"},
+            {id: 2, name: "Sunflower Oil", unit: "1L", cat: "Dairy & Oil", price: 135, stock: 45, imgUrl: "https://m.media-amazon.com/images/I/51rYqE7aB7L._AC_UF1000,1000_QL80_.jpg"},
+            {id: 3, name: "Fresh Tomatoes", unit: "1kg", cat: "Fresh Veggies", price: 40, stock: 50, imgUrl: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&q=80"},
+            {id: 4, name: "Washing Powder", unit: "1kg", cat: "Household", price: 120, stock: 8, imgUrl: "https://m.media-amazon.com/images/I/61NlPjT0-2L._AC_UF1000,1000_QL80_.jpg"}
         ];
         localStorage.setItem('sapna_inventory', JSON.stringify(initialInventory));
     }
@@ -63,7 +59,7 @@ function loadShopProducts() {
                 ? `<img src="${product.imgUrl}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">`
                 : `<div class="w-full h-full bg-slate-200 shadow-inner flex items-center justify-center"><i class="fa-solid fa-box text-5xl text-slate-400"></i></div>`;
 
-            // 3D Card Classes Applied Here
+            // Renders Name and Unit properly
             container.innerHTML += `
                 <div class="tilt-card bg-white rounded-[2rem] p-5 border-2 border-slate-100 shadow-[0_10px_0_0_#e2e8f0] hover:shadow-[0_15px_0_0_#cbd5e1] hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between group">
                     <div>
@@ -73,7 +69,7 @@ function loadShopProducts() {
                     </div>
                     <div class="flex justify-between items-end">
                         <div>
-                            <div class="font-extrabold text-2xl text-teal-600 drop-shadow-sm">₹${product.price}</div>
+                            <div class="font-extrabold text-2xl text-teal-600 drop-shadow-sm">₹${product.price} <span class="text-sm text-slate-400 font-bold">/ ${product.unit || 'unit'}</span></div>
                             <div class="mt-1">${stockWarning}</div>
                         </div>
                         <button onclick="addToCart(${product.id})" class="bg-teal-500 text-white w-12 h-12 rounded-2xl border-b-[6px] border-teal-700 hover:bg-teal-400 active:border-b-0 active:translate-y-[6px] transition-all flex items-center justify-center shadow-lg">
@@ -84,7 +80,6 @@ function loadShopProducts() {
             `;
         });
 
-        // Re-initialize VanillaTilt for dynamically added cards
         if(typeof VanillaTilt !== 'undefined') {
             VanillaTilt.init(document.querySelectorAll(".tilt-card"), { max: 10, speed: 400, glare: true, "max-glare": 0.2 });
         }
@@ -120,7 +115,7 @@ function loadLiveOffers() {
     } catch(e) { console.error(e); }
 }
 
-// 4. Cart Logic (3D UI + Auto-fill)
+// 4. Cart Logic
 window.toggleCart = function() {
     const modal = document.getElementById('cart-modal');
     const panel = document.getElementById('cart-panel');
@@ -187,7 +182,7 @@ window.updateCartUI = function() {
         itemsEl.innerHTML += `
             <div class="bg-white p-4 rounded-2xl border-2 border-slate-100 shadow-[0_4px_0_0_#e2e8f0] flex justify-between items-center mb-4">
                 <div>
-                    <h4 class="font-extrabold text-slate-800 text-sm">${item.name}</h4>
+                    <h4 class="font-extrabold text-slate-800 text-sm">${item.name} <span class="text-slate-400 font-medium">(${item.unit || 'pc'})</span></h4>
                     <p class="text-slate-500 text-xs mt-1 font-bold bg-slate-100 px-2 py-1 rounded-md inline-block">₹${item.price} x ${item.qty}</p>
                 </div>
                 <div class="flex items-center gap-4">
@@ -202,7 +197,7 @@ window.updateCartUI = function() {
     totalEl.innerText = '₹' + totalPrice;
 }
 
-// 5. Checkout Page Logic (checkout.html)
+// 5. Checkout Page Logic
 window.loadCheckoutPage = function() {
     if(!window.location.href.includes('checkout.html')) return;
     
@@ -212,7 +207,6 @@ window.loadCheckoutPage = function() {
         return;
     }
 
-    // Auto-fill logged-in user details
     const activeUser = JSON.parse(localStorage.getItem('sapna_client_user'));
     if (activeUser) {
         if(document.getElementById('chk-name')) document.getElementById('chk-name').value = activeUser.name || '';
@@ -220,7 +214,6 @@ window.loadCheckoutPage = function() {
         if(document.getElementById('chk-address')) document.getElementById('chk-address').value = activeUser.address || '';
     }
 
-    // Render Order Summary
     const config = JSON.parse(localStorage.getItem('sapna_config')) || { deliveryFee: 20 };
     const list = document.getElementById('chk-items-list');
     let subtotal = 0;
@@ -229,14 +222,13 @@ window.loadCheckoutPage = function() {
         list.innerHTML = '';
         cart.forEach(item => {
             subtotal += (item.price * item.qty);
-            list.innerHTML += `<div class="flex justify-between text-sm text-slate-300"><span>${item.qty}x ${item.name}</span><span>₹${item.price * item.qty}</span></div>`;
+            list.innerHTML += `<div class="flex justify-between text-sm text-slate-300"><span>${item.qty}x ${item.name} (${item.unit || 'pc'})</span><span>₹${item.price * item.qty}</span></div>`;
         });
         document.getElementById('chk-subtotal').innerText = '₹' + subtotal;
         document.getElementById('chk-fee').innerText = '₹' + config.deliveryFee;
         document.getElementById('chk-total').innerText = '₹' + (subtotal + config.deliveryFee);
     }
 
-    // Set minimum date to today
     const dateInput = document.getElementById('chk-date');
     if(dateInput) {
         const today = new Date().toISOString().split('T')[0];
@@ -293,29 +285,28 @@ window.submitOrder = function(e) {
     const orderId = 'ORD-' + Math.floor(1000 + Math.random() * 9000);
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     const total = subtotal + finalFee;
-    const itemsString = cart.map(item => `${item.qty}x ${item.name}`).join(', ');
+    
+    // Updates Admin Item string with Unit
+    const itemsString = cart.map(item => `${item.qty}x ${item.name} (${item.unit || 'pc'})`).join(', ');
 
-    // Format WhatsApp Message
+    // Format WhatsApp Message with Units
     let waMessage = `*Sapna Home Needs - New Order: ${orderId}*%0A%0A`;
     waMessage += `*Customer:* ${name}%0A*Phone:* ${phone} ${altPhone ? `(Alt: ${altPhone})` : ''}%0A`;
     waMessage += `*Type:* ${mode}%0A*Slot:* ${deliveryTimeStr}%0A`;
     if(mode === 'Home Delivery') waMessage += `*Address:* ${address}%0A`;
     waMessage += `%0A*Items:*%0A`;
-    cart.forEach(item => { waMessage += `- ${item.qty}x ${item.name} (₹${item.price * item.qty})%0A`; });
-    waMessage += `%0A*Total Paid:* ₹${total}%0A%0APlease confirm my order!`;
+    cart.forEach(item => { waMessage += `- ${item.qty}x ${item.name} (${item.unit || 'pc'}) - ₹${item.price * item.qty}%0A`; });
+    waMessage += `%0A*Delivery Fee:* ₹${finalFee}%0A*Total Paid:* ₹${total}%0A%0APlease confirm my order!`;
 
     const waUrl = `https://wa.me/917676808068?text=${waMessage}`;
 
-    // Save Order to Admin LocalStorage
     const existingOrders = JSON.parse(localStorage.getItem('sapna_orders')) || [];
     existingOrders.unshift({ id: orderId, name: name, items: itemsString, total: total, status: "Pending" });
     localStorage.setItem('sapna_orders', JSON.stringify(existingOrders));
 
-    // Save Receipt Details for the next page
     const receiptData = { orderId, method: mode, time: deliveryTimeStr, total, waUrl };
     localStorage.setItem('sapna_current_receipt', JSON.stringify(receiptData));
 
-    // Empty Cart and Go to Receipt
     localStorage.removeItem('sapna_cart');
     cart = [];
     window.location.href = 'receipt.html';
@@ -338,7 +329,7 @@ window.loadReceiptPage = function() {
     }
 }
 
-// 7. Auth & OTP Logic (index.html)
+// 7. Auth Logic
 window.processAuth = function(e, action) {
     e.preventDefault(); 
     
@@ -358,17 +349,14 @@ window.processAuth = function(e, action) {
         authAction = 'signup';
         
     } else if (action === 'login') {
-        // Automatically make it lowercase and remove accidental spaces
         const phone = document.getElementById('auth-phone').value.trim().toLowerCase();
         const pass = document.getElementById('auth-pass').value;
         
-        // ADMIN LOGIN CHECK (Fixed for lowercase/spaces)
         if (phone === 'admin' && pass === 'sapna123') { 
             window.location.href = 'admin.html'; 
             return; 
         }
         
-        // CLIENT LOGIN CHECK
         const user = users.find(u => u.phone === phone && u.pass === pass);
         if(!user) { 
             alert("Invalid Credentials. Please try again."); 
@@ -451,8 +439,7 @@ window.saveClientSettings = function(e) {
     if(typeof checkLoginStatus === 'function') checkLoginStatus(); 
 }
 
-// --- MASTER LOADER ---
-// This runs automatically when ANY page loads to trigger the right functions.
+// Load all specific views
 document.addEventListener('DOMContentLoaded', () => { 
     initializeData(); 
     loadLiveOffers(); 
